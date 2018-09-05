@@ -1,0 +1,140 @@
+@main-menu-bgcolor: #333;
+
+.main-layout {
+	height: 100%;
+	min-width: 1003px;
+	background: #f7f6f2;
+
+	.ant-layout-sider-children {
+		overflow: auto;
+		overflow-x: hidden;
+	}
+	.main-header {
+		padding: 0px;
+		box-shadow: 0 0 0 1px rgba(0, 0, 0, .1);
+		background: #262626;
+		color: #bbb;
+		z-index: 1000;
+		.logo {
+			float: left;
+			text-align: center;
+			font-size: 20px;
+			padding: 0 20px;
+			font-weight: bold;
+			.anticon {
+				font-size: 40px;
+				vertical-align: middle;
+			}
+		}
+	}
+	.main-sider {
+		background: @main-menu-bgcolor;
+	}
+	.main-menu {
+		.ant-menu-item {
+			padding: 0px !important;
+			height: 60px !important;
+			text-align: center;
+			line-height: 22px;
+
+			a {
+				display: block;
+			}
+
+			&.ant-menu-item-selected {
+				background-color: rgba(255, 255, 255, .2) !important;
+			}
+		}
+		.anticon {
+			display: block;
+			margin: 0 auto;
+			font-size: 21px;
+			margin-top: 12px;
+		}
+	}
+	.sub-sider,
+	.sub-menu {
+		background: none;
+	}
+
+	.sub-sider {
+		border-right: 1px solid #ccc !important;
+		.header {
+			padding: 30px 25px 10px;
+			margin-bottom: 10px;
+			h2 {
+				font-size: 18px;
+			}
+			p {
+				margin: 5px 0;
+				font-size: 12px;
+				font-weight: 400;
+				line-height: 16px;
+				color: #666;
+				word-wrap: break-word;
+				word-break: normal;
+			}
+		}
+	}
+
+	.sub-menu {
+		.ant-menu-item-divider {
+			background: #ccc !important;
+			margin: 20px 0;
+		}
+		.ant-menu-item {
+			height: 34px !important;
+			line-height: 34px !important;
+			a:hover {
+				color: #000 !important;
+			}
+			&.ant-menu-item-selected {
+				background: rgba(0, 0, 0, .08) !important;
+				&:after {
+					content: none !important;
+				}
+				a {
+					color: #000;
+				}
+			}
+		}
+	}
+
+	.sub-content {
+		background: #fdfdfd;
+	}
+
+	.page-content {
+		padding: 20px;
+		.header {
+			font-size: 18px;
+			font-weight: 400;
+			padding-bottom: 10px;
+			margin-bottom: 10px;
+			&.dividing {
+				border-bottom: 1px solid rgba(0, 0, 0, .1);
+			}
+		}
+	}
+}
+
+.toolbar {
+	margin-bottom: 15px;
+	&:after {
+		content: "";
+		display: block;
+		clear: both;
+	}
+}
+
+.action-bar {
+	margin: 10px;
+	padding: 10px 0;
+	border-top: 1px solid rgba(0, 0, 0, .1);
+}
+
+.sp-line {
+	height: 0;
+	border-top: 1px solid rgba(0, 0, 0, .1);
+	margin: 10px 0;
+}
