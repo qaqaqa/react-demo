@@ -41,6 +41,10 @@
 		853BEE8BEF144FFC876CB47A /* libRealmReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A533A76905C4AC69C9A7B99 /* libRealmReact.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		B1426FB8B9104CF39DFB8730 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = F4E7ED52E02148F68BCC66FD /* libc++.tbd */; };
+		CCD4F17321412C7200B0982E /* BGLineChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = CCD4F16F21412C7200B0982E /* BGLineChartView.m */; };
+		CCD4F17421412C7200B0982E /* LineChartManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CCD4F17021412C7200B0982E /* LineChartManager.m */; };
+		CCD4F17521412C7200B0982E /* LineChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = CCD4F17121412C7200B0982E /* LineChartView.m */; };
+		CCD4F17821412F0E00B0982E /* UIColor+ColorChange.m in Sources */ = {isa = PBXBuildFile; fileRef = CCD4F17721412F0E00B0982E /* UIColor+ColorChange.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -356,6 +360,14 @@
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
+		CCD4F16D21412C7200B0982E /* LineChartManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LineChartManager.h; sourceTree = "<group>"; };
+		CCD4F16E21412C7200B0982E /* LineChartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LineChartView.h; sourceTree = "<group>"; };
+		CCD4F16F21412C7200B0982E /* BGLineChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGLineChartView.m; sourceTree = "<group>"; };
+		CCD4F17021412C7200B0982E /* LineChartManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LineChartManager.m; sourceTree = "<group>"; };
+		CCD4F17121412C7200B0982E /* LineChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LineChartView.m; sourceTree = "<group>"; };
+		CCD4F17221412C7200B0982E /* BGLineChartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGLineChartView.h; sourceTree = "<group>"; };
+		CCD4F17621412F0E00B0982E /* UIColor+ColorChange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+ColorChange.h"; sourceTree = "<group>"; };
+		CCD4F17721412F0E00B0982E /* UIColor+ColorChange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+ColorChange.m"; sourceTree = "<group>"; };
 		F4E7ED52E02148F68BCC66FD /* libc++.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -499,9 +511,12 @@
 		13B07FAE1A68108700A75B9A /* reactDemo */ = {
 			isa = PBXGroup;
 			children = (
+				CCD4F16C21412C7200B0982E /* LineChart */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
+				CCD4F17621412F0E00B0982E /* UIColor+ColorChange.h */,
+				CCD4F17721412F0E00B0982E /* UIColor+ColorChange.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
@@ -639,6 +654,19 @@
 				CCD4F1412140DB4F00B0982E /* libRealmReact.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		CCD4F16C21412C7200B0982E /* LineChart */ = {
+			isa = PBXGroup;
+			children = (
+				CCD4F16D21412C7200B0982E /* LineChartManager.h */,
+				CCD4F16E21412C7200B0982E /* LineChartView.h */,
+				CCD4F16F21412C7200B0982E /* BGLineChartView.m */,
+				CCD4F17021412C7200B0982E /* LineChartManager.m */,
+				CCD4F17121412C7200B0982E /* LineChartView.m */,
+				CCD4F17221412C7200B0982E /* BGLineChartView.h */,
+			);
+			path = LineChart;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1162,7 +1190,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CCD4F17321412C7200B0982E /* BGLineChartView.m in Sources */,
+				CCD4F17521412C7200B0982E /* LineChartView.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				CCD4F17821412F0E00B0982E /* UIColor+ColorChange.m in Sources */,
+				CCD4F17421412C7200B0982E /* LineChartManager.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
