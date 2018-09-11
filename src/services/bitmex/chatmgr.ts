@@ -3,6 +3,7 @@ import { Events } from 'jsmodules/lib/events';
 import { Logger } from '../../utils/logger';
 import { di } from 'jsmodules';
 import HicoinService from '../hicoin';
+import { __BITMEX_APIKEY__ } from '../../config/bitmex';
 
 type WebSocketMessage = {
 	table: string;
@@ -64,7 +65,7 @@ export class BitmexWebSocketMgr extends Events {
 		reconnectTime = 1000;
 		var response = await this.hicoinService.getSignature('/realtime', 'GET', null);
 		var data = response.data;
-		this.send({ op: 'authKeyExpires', args: [ 'Miir7CLP79F5Q1MTV5jdbhmP', data.expires, data.sig ] });
+		this.send({ op: 'authKeyExpires', args: [ __BITMEX_APIKEY__, data.expires, data.sig ] });
 		this.__last_sub__ = {};
 		this.refreshSubs();
 	};

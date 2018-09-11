@@ -1,5 +1,6 @@
 import { di, HttpFactory } from 'jsmodules';
 import HicoinService from '../hicoin';
+import { __BITMEX_APIKEY__ } from '../../config/bitmex';
 
 export default class BitmexService {
 	@di.Inject() private bitmex_api_v1: HttpFactory;
@@ -14,7 +15,7 @@ export default class BitmexService {
 		var url = '/api/v1' + api;
 		var response = await this.hicoinService.getSignature(url, method, data);
 		return {
-			'api-key': 'Miir7CLP79F5Q1MTV5jdbhmP',
+			'api-key': __BITMEX_APIKEY__,
 			'api-expires': response.data.expires,
 			'api-signature': response.data.sig
 		};
