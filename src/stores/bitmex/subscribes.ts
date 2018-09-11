@@ -73,3 +73,34 @@ export class PositionState {
 		}
 	};
 }
+
+export class InstrumentState {
+	@di.Inject() bitmexWebSocketMgr: BitmexWebSocketMgr;
+
+	instrument = observable.map({}, { deep: false });
+
+	constructor() {
+		this.bitmexWebSocketMgr.on('instrument').then(this.resolveOrder);
+		this.init();
+	}
+
+	async init() {
+		this.bitmexWebSocketMgr.addSub('instrument');
+	}
+
+	resolveOrder = (data, action, message) => {
+		if (action == 'partial') {
+			this.instrument.clear();
+		}
+		for (const item of data) {
+			switch (action) {
+				case 'delete':
+					this.instrument.delete(item.symbol);
+					break;
+				default:
+					var last = this.instrument.get(item.symbol);
+					this.instrument.set(item.symbol, { ...last, ...item });
+			}
+		}
+	};
+}
