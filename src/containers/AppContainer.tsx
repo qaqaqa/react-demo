@@ -6,6 +6,7 @@ import { WebKeyValueStorage } from '../storage/web/KeyValueStorage';
 import TokenService from '../services/token';
 import HicoinService from '../services/hicoin';
 import BitmexService from '../services/bitmex';
+import { BitmexWebSocketMgr } from '../services/bitmex/chatmgr';
 
 const { container } = di;
 
@@ -13,14 +14,25 @@ const { container } = di;
 
 container.bind('httpFactory').to(HttpFactory);
 
-container.bind('bitmex_api_v1').toFactory(AutoHttpFactory).params('https://testnet.bitmex.com/api/v1');
-container.bind('hicoin_api_v1').toFactory(AutoHttpFactory).params('https://testnet.bitmex.com/api/v1');
+container.bind('hicoin_api_v1').toFactory(AutoHttpFactory).params('http://192.168.31.84:5050/api');
 
 //#endregion
 
 //#region global manager
 container.bind('app').to(AppState).isSingletonScope();
 container.bind('kvStorage').to(WebKeyValueStorage).params('Main').isSingletonScope();
+
+container
+	.bind('bitmexWebSocketMgr')
+	.to(BitmexWebSocketMgr)
+	.params((subscribe?) => {
+		var p = '';
+		if (subscribe) {
+			p = `?subscribe=${subscribe}`;
+		}
+		return 'wss://testnet.bitmex.com/realtime' + p;
+	})
+	.isSingletonScope();
 
 //#endregion
 //#region services

@@ -1,15 +1,29 @@
 import { di, HttpFactory } from 'jsmodules';
-import HicoinService from './hicoin';
+import HicoinService from '../hicoin';
 
 export default class BitmexService {
 	@di.Inject() private bitmex_api_v1: HttpFactory;
 
 	@di.Inject() private hicoinService: HicoinService;
 
+	constructor() {
+		window['bitmex'] = this;
+	}
+
 	private async getSignatureHeader(api, method, data) {
-		var url = this.bitmex_api_v1.baseUrl + api;
-		var response = await this.hicoinService.getSignature();
-		return {};
+		var url = '/api/v1' + api;
+		var response = await this.hicoinService.getSignature(url, method, data);
+		return {
+			'api-key': 'Miir7CLP79F5Q1MTV5jdbhmP',
+			'api-expires': response.data.expires,
+			'api-signature': response.data.sig
+		};
+	}
+
+	async getUser() {
+		var api = '/user';
+		var headers = await this.getSignatureHeader(api, 'GET', null);
+		return this.bitmex_api_v1.url('/user').headers(headers).get();
 	}
 
 	/**
