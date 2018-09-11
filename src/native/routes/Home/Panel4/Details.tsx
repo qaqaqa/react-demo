@@ -12,22 +12,17 @@ class Details extends React.Component<Props, any> {
     render() {
         const { name } = this.props;
         var view = null
-        if (name == '仓位[0]') {
+        if (name == '仓位') {
+            var arr = [['','1000','10000','9999','8888','90000','1000000','35%','1000','23000'],['','1000','10000','9999','8888','90000','1000000','35%','1000','23000']];
             view = <View>
-                <Text style={styles.textInputTitle}>合约</Text>
-                <Text style={styles.textInputTitle}>目前仓位数量：100000</Text>
-                <Text style={styles.textInputTitle}>价值：100000000000</Text>
-                <Text style={styles.textInputTitle}>开仓价格：1000</Text>
-                <Text style={styles.textInputTitle}>标记价格：1000</Text>
-                <Text style={styles.textInputTitle}>强平价格：1000</Text>
-                <Text style={styles.textInputTitle}>保证金：1000</Text>
-                <Text style={styles.textInputTitle}>未实现盈亏(回报率%)：1000%</Text>
-                <Text style={styles.textInputTitle}>已实现盈亏：1000</Text>
-                <Text style={styles.textInputTitle}>平仓：1000</Text>
+                <Text style={styles.textInputTitle}>合约  目前仓位数量  价值  开仓价格  标记价格  强平价格  保证金  未实现盈亏(回报率%)  已实现盈亏  平仓</Text>
+                {arr.map(name => <View >
+                    <Text style={styles.textInputTitle}>{name}</Text>
+                </View>)}
             </View>
         }
         return <View style={styles.bgView}>
-        {view}
+            {view}
         </View>
     }
 }

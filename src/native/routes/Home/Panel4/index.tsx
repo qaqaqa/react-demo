@@ -7,7 +7,7 @@ const width = Dimensions.get("window").width;
 class Panel4 extends React.Component<any, any> {
 
     render() {
-        var arr = ['仓位[0]', '已平仓仓位', '活动委托[0]', '止损委托[0]', '已成交', '委托历史'];
+        var arr = ['仓位', '已平仓仓位', '活动委托[0]', '止损委托', '已成交', '委托历史'];
         return <View style={styles.bgView}>
 
             <Tabs mode="Top" showLine itemStyle={styles.overvalLink} selectedItemStyle={styles.overvalLinkSelected} itemTextStyle={styles.overvalText}>
