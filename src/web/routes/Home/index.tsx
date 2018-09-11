@@ -2,8 +2,13 @@ import * as React from 'react';
 import Panel1 from './components/Panel1';
 import Panel2 from './components/Panel2';
 import Panel3 from './components/Panel3';
-import { Collapse, Layout, Card, Table } from 'antd';
+import { Collapse, Layout, Card, Table, Tabs } from 'antd';
 import './styles/style.less';
+import { di } from 'jsmodules';
+import { OrderState, PositionState } from '../../../stores/bitmex/subscribes';
+import PositionTable from './components/Positions';
+import OrderTable from './components/Orders';
+import HomeTabs from './components/Tabs';
 const { Content, Sider } = Layout;
 const Panel = Collapse.Panel;
 const { Column, ColumnGroup } = Table;
@@ -16,7 +21,7 @@ class Home extends React.Component<any, any> {
 	componentDidMount() {
 		setTimeout(() => {
 			this.setState({ loading: false });
-		}, 5000);
+		}, 500);
 	}
 
 	public render(): JSX.Element {
@@ -36,20 +41,7 @@ class Home extends React.Component<any, any> {
 					</Collapse>
 				</Sider>
 				<Content style={{ padding: '20px' }}>
-					<Card title="仓位" loading={this.state.loading} bodyStyle={{ padding: 0, paddingTop: '1px' }}>
-						<Table dataSource={[]} size="middle">
-							<Column title="合约" dataIndex="col1" key="col1" />
-							<Column title="目前仓位数量" dataIndex="col2" key="col2" />
-							<Column title="价值" dataIndex="col3" key="col3" />
-							<Column title="开仓价格" dataIndex="col4" key="col4" />
-							<Column title="标记价格" dataIndex="col5" key="col5" />
-							<Column title="强平价格" dataIndex="col6" key="col6" />
-							<Column title="保证金" dataIndex="col7" key="col7" />
-							<Column title="未实现盈亏(回报率%)" dataIndex="col8" key="col8" />
-							<Column title="已实现盈亏" dataIndex="col9" key="col9" />
-							<Column title="平仓" dataIndex="col10" key="col10" />
-						</Table>
-					</Card>
+					<HomeTabs />
 					<Card title="图表" loading={true} style={{ marginTop: '20px' }}>
 						<p>Card content</p>
 						<p>Card content</p>

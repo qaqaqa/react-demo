@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { Row, Col, Slider } from 'antd';
+import { di } from 'jsmodules';
+import { OrderState } from '../../../../../stores/bitmex/subscribes';
 
 export default class extends React.Component<any> {
 	render() {
