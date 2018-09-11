@@ -7,7 +7,7 @@ const width = Dimensions.get("window").width;
 class Panel4 extends React.Component<any, any> {
 
     render() {
-        var arr = ['仓位', '已平仓仓位', '活动委托[0]', '止损委托', '已成交', '委托历史'];
+        var arr = ['仓位', '已平仓仓位', '活动委托', '止损委托', '已成交', '委托历史'];
         return <View style={styles.bgView}>
 
             <Tabs mode="Top" showLine itemStyle={styles.overvalLink} selectedItemStyle={styles.overvalLinkSelected} itemTextStyle={styles.overvalText}>
@@ -22,10 +22,10 @@ class Panel4 extends React.Component<any, any> {
     }
 }
 
-const margin = 10;
+const margin = 2;
 const styles = StyleSheet.create({
     bgView: {
-        marginLeft: 20,
+        marginTop:20
     },
     title: {
         color: 'white',
@@ -50,9 +50,9 @@ const styles = StyleSheet.create({
         borderRadius: 15,
     },
     overvalText: {
-        paddingLeft: 10,
-        paddingRight: 10,
-        fontSize: 16,
+        paddingLeft: 2,
+        paddingRight: 2,
+        fontSize: 14,
         color: '#6555fa',
         backgroundColor: 'transparent'
     },
