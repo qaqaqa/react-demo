@@ -104,3 +104,33 @@ export class InstrumentState {
 		}
 	};
 }
+export class MarginState {
+	@di.Inject() bitmexWebSocketMgr: BitmexWebSocketMgr;
+
+	margin = observable.map({}, { deep: false });
+
+	constructor() {
+		this.bitmexWebSocketMgr.on('margin').then(this.resolveOrder);
+		this.init();
+	}
+
+	async init() {
+		this.bitmexWebSocketMgr.addSub('margin');
+	}
+
+	resolveOrder = (data, action, message) => {
+		if (action == 'partial') {
+			this.margin.clear();
+		}
+		for (const item of data) {
+			switch (action) {
+				case 'delete':
+					this.margin.delete(item.account);
+					break;
+				default:
+					var last = this.margin.get(item.account);
+					this.margin.set(item.account, { ...last, ...item });
+			}
+		}
+	};
+}
