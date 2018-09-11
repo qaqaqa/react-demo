@@ -11,6 +11,8 @@ class Panel1 extends React.Component<any, any> {
 
     render() {
         return <View style={styles.bgView}>
+            <Text style={styles.title}>总：0.000XBT</Text>
+            <Text style={styles.title}>可用：0.000XBT</Text>
             <Text style={styles.title}>买卖</Text>
             <View style={styles.bgTextInputView}>
                 <Text style={styles.textInputTitle}>仓位</Text>

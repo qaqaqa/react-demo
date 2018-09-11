@@ -1,28 +1,28 @@
 import * as React from 'react';
 import { TextInput, Text, StyleSheet, View, TouchableOpacity, Slider } from 'react-native'
+import { Tabs, TabPanel } from '../components/Tabs';
+import Details from './Details';
 var Dimensions = require('Dimensions');
 const width = Dimensions.get("window").width;
-
 class Panel4 extends React.Component<any, any> {
 
     render() {
+        var arr = ['仓位[0]', '已平仓仓位', '活动委托[0]', '止损委托[0]', '已成交', '委托历史'];
         return <View style={styles.bgView}>
-            <Text style={styles.title}>仓位</Text>
 
-            <Text style={styles.textInputTitle}>合约</Text>
-            <Text style={styles.textInputTitle}>目前仓位数量：100000</Text>
-            <Text style={styles.textInputTitle}>价值：100000000000</Text>
-            <Text style={styles.textInputTitle}>开仓价格：1000</Text>
-            <Text style={styles.textInputTitle}>标记价格：1000</Text>
-            <Text style={styles.textInputTitle}>强平价格：1000</Text>
-            <Text style={styles.textInputTitle}>保证金：1000</Text>
-            <Text style={styles.textInputTitle}>未实现盈亏(回报率%)：1000%</Text>
-            <Text style={styles.textInputTitle}>已实现盈亏：1000</Text>
-            <Text style={styles.textInputTitle}>平仓：1000</Text>
+            <Tabs mode="Top" showLine itemStyle={styles.overvalLink} selectedItemStyle={styles.overvalLinkSelected} itemTextStyle={styles.overvalText}>
+                {
+                    arr.map(name => <TabPanel name={name} key={name}>
+                        <Details name={name} />
+                    </TabPanel>)
+                }
+            </Tabs>
+
         </View>
     }
 }
 
+const margin = 10;
 const styles = StyleSheet.create({
     bgView: {
         marginLeft: 20,
@@ -36,6 +36,25 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 15,
         marginTop: 7
+    },
+    overvalLink: {
+        marginLeft: margin,
+        marginRight: margin,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    overvalLinkSelected: {
+        marginLeft: margin,
+        marginRight: margin,
+        backgroundColor: '#EDE9FF',
+        borderRadius: 15,
+    },
+    overvalText: {
+        paddingLeft: 10,
+        paddingRight: 10,
+        fontSize: 16,
+        color: '#6555fa',
+        backgroundColor: 'transparent'
     },
 })
 
