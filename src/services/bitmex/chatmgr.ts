@@ -2,53 +2,74 @@ import * as _ from 'lodash';
 import { Events } from 'jsmodules/lib/events';
 import { Logger } from '../../utils/logger';
 import { di } from 'jsmodules';
+import HicoinService from '../hicoin';
 
-type MessageType = 'JoinRoomMessage' | 'RoomMessage';
+type WebSocketMessage = {
+	table: string;
+	action: 'partial' | 'update' | 'insert' | 'delete';
+	// 这里发出一组数据行。 他们是在结构上与从 REST API 返回的数据相同。
+	data: Object[];
 
-type ChatMessage = {
-	type: MessageType;
-	content: any;
+	//
+	// 以下字段定义了数据表，仅在`partial`中发送
+	//
+
+	// 每个数据对象的特征名称是唯一的
+	// 如果提供多个，则采用复合键名 (key)。
+	// 使用这些 key 的名称来唯一地标识数据列。
+	// 你接收的左右数据均包含 key 列。
+	keys?: string[];
+
+	// 这里列出了与其他数据表的数据键之间的关系。
+	// 例如，`quote`的外部键是 {"symbol": "instrument"}
+	foreignKeys?: { [key: string]: string };
+
+	// 这里列举了数据表的数据类型。 可能的类型为：
+	// "symbol" - 在大多数语言中类似于 "string"
+	// "guid"
+	// "timestamp"
+	// "timespan"
+	// "float"
+	// "long"
+	// "integer"
+	// "boolean"
+	types?: { [key: string]: string };
+
+	// 如果存在对于同一数据表的多个订阅，请使用 `filter` 来指明不同的订阅
+	// 所包含的数据，这是因为 `table` 属性并不包括某一订阅的合约标记。
+	filter?: { account?: number; symbol?: string };
+
+	// 这些是我们内部的特征名称，用来代表这些数据是如何被排序已经组合的。
+	attributes?: { [key: string]: string };
 };
 
-export type JoinRoomMessage = {
-	id: string;
-	name: string;
-	type: string;
-	description: string;
-};
-type MessageFrom = 'self' | 'user';
-
-export type RoomMessage = {
-	content: string;
-	creation_time: string;
-	name: string;
-	room_id: string;
-	surname: string;
-	message_type: string;
-	user_avatar: string;
-	user_id: string;
-	username: string;
-	id: string;
-	from: MessageFrom;
-};
-
-const MessageSeparator = String.fromCharCode(0x1e);
-const MessageSeparator_MsgPack = String.fromCharCode(0x00);
 export class BitmexWebSocketMgr extends Events {
+	@di.Inject() private hicoinService: HicoinService;
+
 	private __webSocket__: WebSocket;
+
 	private lockReconnect = false;
-	private __room_map__ = {};
 	private urlProvider;
 
-	private handleOpen = (event) => {
+	constructor(urlProvider) {
+		super();
+		this.provider(urlProvider);
+		this.connect();
+	}
+
+	private handleOpen = async (event) => {
 		Logger.info('WS:聊天服务连接成功');
-		this.__last_rooms__ = {};
-		this.refreshRooms();
+
+		var response = await this.hicoinService.getSignature('/realtime', 'GET', null);
+		var data = response.data;
+		this.send({ op: 'authKeyExpires', args: [ 'Miir7CLP79F5Q1MTV5jdbhmP', data.expires, data.sig ] });
+		this.__last_sub__ = {};
+		this.refreshSubs();
 	};
 	private handleClose = (event) => {
 		Logger.info('WS:聊天服务连接断开', event.target.url, event.code);
 		this.__webSocket__ = null;
-		this.__last_rooms__ = {};
+		this.__last_sub__ = {};
 		if (event.target['__code__'] != 4000 && event.code != 4000) {
 			this.reconnect(2000);
 		} else {
@@ -59,46 +80,23 @@ export class BitmexWebSocketMgr extends Events {
 	private handleError = (event) => {
 		Logger.info('WS:聊天服务连接错误', event.code);
 		this.__webSocket__ = null;
-		this.__last_rooms__ = {};
+		this.__last_sub__ = {};
 		this.reconnect(2000);
-	};
-
-	private handleJoinRoom = (content: JoinRoomMessage) => {
-		this.__room_map__[content.id] = content.name;
-		this.trigger(`joinRoom@${content.name}`, content);
-	};
-
-	private handleRoomMessage = (room_id, messages: RoomMessage) => {
-		var room_name = this.__room_map__[room_id];
-		if (room_name) {
-			this.trigger(`message@${room_name}`, messages);
-		}
-	};
-
-	private resolveMessage = (messages: ChatMessage[]) => {
-		var room_messages = {};
-		for (var message of messages) {
-			if (message.type == 'JoinRoomMessage') {
-				this.handleJoinRoom(message.content);
-			} else if (message.type == 'RoomMessage') {
-				var msg = message.content;
-				if (!room_messages[msg.room_id]) {
-					room_messages[msg.room_id] = [];
-				}
-				room_messages[msg.room_id].push(msg);
-			}
-		}
-		for (var room_id in room_messages) {
-			var msgs = room_messages[room_id];
-			this.handleRoomMessage(room_id, msgs);
-		}
 	};
 
 	private handleMessage = (event: MessageEvent) => {
 		this.refreshServerTimer();
-		var messages = this.decodeMessage(event.data);
-		if (messages) {
-			this.resolveMessage(messages);
+		if (event.data.indexOf('primus::ping::') > -1) {
+			return;
+		}
+		var message: any = this.decodeMessage(event.data);
+		if (message) {
+			if (message.table) {
+				this.trigger(message.table, message.data, message.action, message);
+			}
+			if (message.subscribe) {
+				this.trigger(message.subscribe + '.ok', message.success, message.request, message);
+			}
 		}
 	};
 
@@ -125,34 +123,28 @@ export class BitmexWebSocketMgr extends Events {
 		}
 	}
 
-	private __rooms__ = {};
-
-	private __last_rooms__ = {};
-
-	private __room_timer__;
-	private refreshRooms() {
-		clearTimeout(this.__room_timer__);
-		this.__room_timer__ = setTimeout(() => {
-			var last_keys = _.keys(this.__last_rooms__);
-			var next_keys = _.keys(this.__rooms__);
+	private __subs__ = {};
+	private __last_sub__ = {};
+	private __sub_timer__;
+	private refreshSubs() {
+		clearTimeout(this.__sub_timer__);
+		this.__sub_timer__ = setTimeout(() => {
+			var last_keys = _.keys(this.__last_sub__);
+			var next_keys = _.keys(this.__subs__);
 			var removed_keys = _.difference(last_keys, next_keys);
 			var added_keys = _.difference(next_keys, last_keys);
 			if (removed_keys.length > 0) {
-				Logger.info('WS:退出房间', removed_keys);
-				for (const room_name of removed_keys) {
-					this.send({ type: 'LeaveRoom', content: { room_name: room_name } });
-				}
+				Logger.info('WS:取消订阅消息', removed_keys);
+				this.send({ op: 'unsubscribe', args: removed_keys });
 			}
 			if (added_keys.length > 0) {
-				Logger.info('WS:进入房间', added_keys);
-				for (const room_name of added_keys) {
-					this.send({ type: 'JoinRoom', content: { room_name: room_name } });
-				}
+				Logger.info('WS:订阅消息', added_keys);
+				this.send({ op: 'subscribe', args: added_keys });
 			}
-			this.__last_rooms__ = _.clone(this.__rooms__);
+			this.__last_sub__ = _.clone(this.__subs__);
 			if (__DEV__) {
-				var keys = _.keys(this.__last_rooms__);
-				Logger.info('WS:房间总数:', keys);
+				var keys = _.keys(this.__last_sub__);
+				Logger.info('WS:当前订阅:', keys);
 			}
 		});
 	}
@@ -162,19 +154,7 @@ export class BitmexWebSocketMgr extends Events {
 	}
 
 	private decodeMessage(buffer) {
-		var jsonResults = buffer.split(MessageSeparator);
-		var messages = [];
-		if (jsonResults.length > 1) {
-			jsonResults = jsonResults.slice(0, jsonResults.length - 1);
-			jsonResults.forEach((r) => {
-				try {
-					messages.push(JSON.parse(r));
-				} catch (e) {
-					console.log('parse json error', r, e);
-				}
-			});
-		}
-		return messages;
+		return JSON.parse(buffer);
 	}
 
 	provider(urlProvider) {
@@ -187,7 +167,7 @@ export class BitmexWebSocketMgr extends Events {
 		this.lockReconnect = true;
 		setTimeout(() => {
 			var url = this.urlProvider();
-			Logger.info('WS:聊天服务正在连接', url);
+			Logger.info('WS:消息服务正在连接', url);
 			this.__webSocket__ = new WebSocket(url);
 			this.__webSocket__.onopen = this.handleOpen;
 			this.__webSocket__.onclose = this.handleClose;
@@ -209,31 +189,25 @@ export class BitmexWebSocketMgr extends Events {
 	}
 
 	reconnect(timeout = 0) {
-		this.__last_rooms__ = {};
+		this.__last_sub__ = {};
 		this.close().connect();
 	}
-
-	joinRoom(room_name) {
-		if (!this.__rooms__[room_name]) {
-			this.__rooms__[room_name] = 1;
+	addSub(subName) {
+		if (!this.__subs__[subName]) {
+			this.__subs__[subName] = 1;
 		} else {
-			this.__rooms__[room_name] += 1;
+			this.__subs__[subName] += 1;
 		}
-		this.refreshRooms();
+		this.refreshSubs();
 	}
-	leaveRoom(room_name) {
-		if (this.__rooms__[room_name]) {
-			this.__rooms__[room_name] -= 1;
+	removeSub(subName) {
+		if (this.__subs__[subName]) {
+			this.__subs__[subName] -= 1;
 		}
 		//如果订阅数被减到0,就删除这个订阅
-		if (this.__rooms__[room_name] == 0) {
-			delete this.__rooms__[room_name];
+		if (this.__subs__[subName] == 0) {
+			delete this.__subs__[subName];
 		}
-		this.refreshRooms();
-	}
-
-	sendInRoom(content) {
-		var data = { type: 'SendMessageInRoom', content };
-		return this.send(data);
+		this.refreshSubs();
 	}
 }

@@ -7,6 +7,7 @@ import TokenService from '../services/token';
 import HicoinService from '../services/hicoin';
 import BitmexService from '../services/bitmex';
 import { BitmexWebSocketMgr } from '../services/bitmex/chatmgr';
+import { OrderState, PositionState } from '../stores/bitmex/subscribes';
 
 const { container } = di;
 
@@ -28,9 +29,9 @@ container
 	.params((subscribe?) => {
 		var p = '';
 		if (subscribe) {
-			p = `?subscribe=${subscribe}`;
+			p = `&subscribe=${subscribe}`;
 		}
-		return 'wss://testnet.bitmex.com/realtime' + p;
+		return 'wss://testnet.bitmex.com/realtime?heartbeat=1' + p;
 	})
 	.isSingletonScope();
 
@@ -39,6 +40,11 @@ container
 container.bind('tokenService').to(TokenService);
 container.bind('hicoinService').to(HicoinService);
 container.bind('bitmexService').to(BitmexService);
+//#endregion
+
+//#region state
+container.bind('orderState').to(OrderState).isSingletonScope();
+container.bind('positionState').to(PositionState).isSingletonScope();
 //#endregion
 
 export function AppContainer(props) {

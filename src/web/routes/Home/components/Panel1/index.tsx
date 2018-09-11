@@ -10,8 +10,8 @@ export default class extends React.Component<any> {
 		var input1: any = this.refs.input1;
 		var input2: any = this.refs.input2;
 		return {
-			price: input1.value,
-			qty: input2.value
+			qty: input1.input.value,
+			price: input2.input.value
 		};
 	};
 
@@ -20,8 +20,12 @@ export default class extends React.Component<any> {
 			var info = this.getInputValue();
 			await this.bitmexService.buyLimit(info.price, info.qty);
 		} catch (ex) {
-			var res = ex.response.data;
-			alert(res.error.message);
+			if (ex.response && ex.response.data) {
+				var res = ex.response.data;
+				alert(res.error.message);
+			} else {
+				throw ex;
+			}
 		}
 	};
 
@@ -30,8 +34,12 @@ export default class extends React.Component<any> {
 			var info = this.getInputValue();
 			this.bitmexService.sellLimit(info.price, info.qty);
 		} catch (ex) {
-			var res = ex.response.data;
-			alert(res.error.message);
+			if (ex.response && ex.response.data) {
+				var res = ex.response.data;
+				alert(res.error.message);
+			} else {
+				throw ex;
+			}
 		}
 	};
 
@@ -59,7 +67,7 @@ export default class extends React.Component<any> {
 						<label>成本:0.000001</label>
 					</Col>
 					<Col span={11} offset={2}>
-						<Button style={{ width: '100%' }} type="danger" onClick={this.handleBuy}>
+						<Button style={{ width: '100%' }} type="danger" onClick={this.handleSell}>
 							做空
 						</Button>
 						<label>成本:0.000001</label>
