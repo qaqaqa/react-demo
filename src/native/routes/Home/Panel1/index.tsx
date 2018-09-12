@@ -1,13 +1,50 @@
 import * as React from 'react';
 import { TextInput, Text, StyleSheet, View, TouchableOpacity } from 'react-native'
+import { di } from 'jsmodules';
+import BitmexService from '../../../../services/bitmex';
 var Dimensions = require('Dimensions');
 const width = Dimensions.get("window").width;
 
 class Panel1 extends React.Component<any, any> {
+    @di.Inject() bitmexService: BitmexService;
 
-    onChangeText = (text) => {
-        console.log('输入仓位：', text);
-    }
+    getInputValue = () => {
+        var input1: any = this.refs.input1;
+        var input2: any = this.refs.input2;
+        console.log(input1._lastNativeText)
+        return {
+            qty: input1._lastNativeText,
+            price: input2._lastNativeText
+        };
+    };
+
+    handleBuy = async () => {
+        try {
+            var info = this.getInputValue();
+            await this.bitmexService.buyLimit(info.price, info.qty);
+        } catch (ex) {
+            if (ex.response && ex.response.data) {
+                var res = ex.response.data;
+                alert(res.error.message);
+            } else {
+                throw ex;
+            }
+        }
+    };
+
+    handleSell = () => {
+        try {
+            var info = this.getInputValue();
+            this.bitmexService.sellLimit(info.price, info.qty);
+        } catch (ex) {
+            if (ex.response && ex.response.data) {
+                var res = ex.response.data;
+                alert(res.error.message);
+            } else {
+                throw ex;
+            }
+        }
+    };
 
     render() {
         return <View style={styles.bgView}>
@@ -17,7 +54,7 @@ class Panel1 extends React.Component<any, any> {
             <View style={styles.bgTextInputView}>
                 <Text style={styles.textInputTitle}>仓位</Text>
                 <TextInput
-                    onChangeText={this.onChangeText}
+                    ref='input1'
                     autoFocus={true}
                     returnKeyType="done"
                     placeholder={''}
@@ -29,7 +66,7 @@ class Panel1 extends React.Component<any, any> {
             <View style={styles.bgTextInputView}>
                 <Text style={styles.textInputTitle}>限价</Text>
                 <TextInput
-                    onChangeText={this.onChangeText}
+                    ref='input2'
                     autoFocus={true}
                     returnKeyType="done"
                     placeholder={''}
@@ -41,13 +78,13 @@ class Panel1 extends React.Component<any, any> {
 
             <View style={styles.bgTextInputView}>
                 <View>
-                    <TouchableOpacity style={styles.touchable1}>
+                    <TouchableOpacity style={styles.touchable1} onPress={this.handleBuy}>
                         <Text style={styles.touchableText}>做多</Text>
                     </TouchableOpacity>
                     <Text style={styles.touchableText}>成本：0.00001</Text>
                 </View>
                 <View>
-                    <TouchableOpacity style={styles.touchable2}>
+                    <TouchableOpacity style={styles.touchable2} onPress={this.handleSell}>
                         <Text style={styles.touchableText}>做空</Text>
                     </TouchableOpacity>
                     <Text style={styles.touchableText1}>成本：0.00001</Text>
@@ -102,7 +139,7 @@ const styles = StyleSheet.create({
         marginLeft: '50%',
     },
     touchableText: {
-        backgroundColor: '#00000000',
+        backgroundColor: 'transparent',
     },
     touchableText1: {
         backgroundColor: '#00000000',
