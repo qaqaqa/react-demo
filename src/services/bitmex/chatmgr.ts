@@ -3,6 +3,7 @@ import { Events } from 'jsmodules/lib/events';
 import { Logger } from '../../utils/logger';
 import { di } from 'jsmodules';
 import HicoinService from '../hicoin';
+import { __BITMEX_APIKEY__ } from '../../config/bitmex';
 
 type WebSocketMessage = {
 	table: string;
@@ -43,6 +44,8 @@ type WebSocketMessage = {
 	attributes?: { [key: string]: string };
 };
 
+let reconnectTime = 1000;
+
 export class BitmexWebSocketMgr extends Events {
 	@di.Inject() private hicoinService: HicoinService;
 
@@ -59,10 +62,10 @@ export class BitmexWebSocketMgr extends Events {
 
 	private handleOpen = async (event) => {
 		Logger.info('WS:聊天服务连接成功');
-
+		reconnectTime = 1000;
 		var response = await this.hicoinService.getSignature('/realtime', 'GET', null);
 		var data = response.data;
-		this.send({ op: 'authKeyExpires', args: [ 'Miir7CLP79F5Q1MTV5jdbhmP', data.expires, data.sig ] });
+		this.send({ op: 'authKeyExpires', args: [ __BITMEX_APIKEY__, data.expires, data.sig ] });
 		this.__last_sub__ = {};
 		this.refreshSubs();
 	};
@@ -71,7 +74,8 @@ export class BitmexWebSocketMgr extends Events {
 		this.__webSocket__ = null;
 		this.__last_sub__ = {};
 		if (event.target['__code__'] != 4000 && event.code != 4000) {
-			this.reconnect(2000);
+			reconnectTime = reconnectTime * 2;
+			this.reconnect(reconnectTime);
 		} else {
 			Logger.info('WS:正常关闭连接,无需重连');
 		}
@@ -81,7 +85,7 @@ export class BitmexWebSocketMgr extends Events {
 		Logger.info('WS:聊天服务连接错误', event.code);
 		this.__webSocket__ = null;
 		this.__last_sub__ = {};
-		this.reconnect(2000);
+		//this.reconnect(2000);
 	};
 
 	private handleMessage = (event: MessageEvent) => {
@@ -190,7 +194,9 @@ export class BitmexWebSocketMgr extends Events {
 
 	reconnect(timeout = 0) {
 		this.__last_sub__ = {};
-		this.close().connect();
+		setTimeout(() => {
+			this.close().connect();
+		}, timeout);
 	}
 	addSub(subName) {
 		if (!this.__subs__[subName]) {
