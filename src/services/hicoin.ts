@@ -12,6 +12,7 @@ export default class HicoinService {
 			postParams = {};
 		}
 		return this.hicoin_api_v1.url('/Signature').get({
+			sec: 'InstrumentState',
 			httpMethod,
 			apiPath,
 			...postParams
