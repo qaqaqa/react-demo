@@ -7,7 +7,7 @@ import TokenService from '../services/token';
 import HicoinService from '../services/hicoin';
 import BitmexService from '../services/bitmex';
 import { BitmexWebSocketMgr } from '../services/bitmex/chatmgr';
-import { OrderState, PositionState, InstrumentState } from '../stores/bitmex/subscribes';
+import { OrderState, PositionState, InstrumentState, MarginState } from '../stores/bitmex/subscribes';
 
 const { container } = di;
 
@@ -46,6 +46,7 @@ container.bind('bitmexService').to(BitmexService);
 container.bind('orderState').to(OrderState).isSingletonScope();
 container.bind('positionState').to(PositionState).isSingletonScope();
 container.bind('instrumentState').to(InstrumentState).isSingletonScope();
+container.bind('marginState').to(MarginState).isSingletonScope();
 //#endregion
 
 export function AppContainer(props) {
