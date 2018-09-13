@@ -195,7 +195,7 @@ export class BitmexWebSocketMgr extends Events {
 	reconnect(timeout = 0) {
 		this.__last_sub__ = {};
 		setTimeout(() => {
-			this.close().connect();
+			//this.close().connect();
 		}, timeout);
 	}
 	addSub(subName) {

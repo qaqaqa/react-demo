@@ -1,13 +1,23 @@
 import * as React from 'react';
 import { di } from 'jsmodules';
 import { OrderState } from '../../../../../stores/bitmex/subscribes';
-import { Table } from 'antd';
+import { Table, Button } from 'antd';
 import { observer } from 'mobx-react';
+import BitmexService from '../../../../../services/bitmex';
 const { Column } = Table;
 export interface OrderTableProps {}
 @observer
 export default class OrderTable extends React.Component<OrderTableProps, any> {
 	@di.Inject() orderState: OrderState;
+	@di.Inject() bitmexService: BitmexService;
+
+	handleClear = (orderID) => {
+		this.orderState.ordres.delete(orderID);
+	};
+
+	handleCancel = (orderID) => {
+		this.bitmexService.cancelOrder(orderID);
+	};
 
 	public render() {
 		var orders = [];
@@ -26,6 +36,36 @@ export default class OrderTable extends React.Component<OrderTableProps, any> {
 				<Column title="类型" dataIndex="ordType" key="ordType" />
 				<Column title="状态" dataIndex="ordStatus" key="ordStatus" />
 				<Column title="时间" dataIndex="timestamp" key="timestamp" />
+				<Column
+					title="操作"
+					dataIndex="orderID"
+					key="orderID"
+					render={(props, record: any) => {
+						switch (record.ordStatus) {
+							case 'Filled':
+							case 'Canceled':
+								return (
+									<Button
+										onClick={() => {
+											this.handleClear(record.orderID);
+										}}
+									>
+										清除
+									</Button>
+								);
+							default:
+								return (
+									<Button
+										onClick={() => {
+											this.handleCancel(record.orderID);
+										}}
+									>
+										取消
+									</Button>
+								);
+						}
+					}}
+				/>
 			</Table>
 		);
 	}

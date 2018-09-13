@@ -37,7 +37,7 @@ export default class BitmexService {
 		var api = '/order';
 		var data = {
 			ordType: 'Limit',
-			price,
+			price: parseFloat(price),
 			orderQty,
 			side: 'Buy',
 			symbol,
@@ -57,7 +57,7 @@ export default class BitmexService {
 		var api = '/order';
 		var data = {
 			ordType: 'Limit',
-			price,
+			price: parseFloat(price),
 			orderQty,
 			side: 'Sell',
 			symbol,

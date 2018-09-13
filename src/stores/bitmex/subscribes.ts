@@ -1,4 +1,4 @@
-import { observable } from 'mobx';
+import { observable, computed } from 'mobx';
 import { di } from 'jsmodules';
 import { BitmexWebSocketMgr } from '../../services/bitmex/chatmgr';
 import HicoinService from '../../services/hicoin';
@@ -16,6 +16,17 @@ export class OrderState {
 	@di.Inject() bitmexWebSocketMgr: BitmexWebSocketMgr;
 
 	ordres = observable.map({}, { deep: false });
+
+	@computed
+	get activeOrderCount() {
+		var cnt = 0;
+		this.ordres.forEach((item) => {
+			if ([ 'Canceled', 'Filled' ].indexOf(item.ordStatus) == -1) {
+				cnt++;
+			}
+		});
+		return cnt;
+	}
 
 	constructor() {
 		this.bitmexWebSocketMgr.on('order').then(this.resolveOrder);
@@ -62,6 +73,9 @@ export class PositionState {
 			this.positions.clear();
 		}
 		for (const item of data) {
+			if (item.currentQty == 0) {
+				action = 'delete';
+			}
 			switch (action) {
 				case 'delete':
 					this.positions.delete(item.symbol);
