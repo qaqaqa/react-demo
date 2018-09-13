@@ -18,7 +18,7 @@ export default class HomeTabs extends React.Component<IAppProps, any> {
 				<Tabs.TabPane tab={`仓位[${this.positionState.positions.size}]`} key="1">
 					<PositionTable />
 				</Tabs.TabPane>
-				<Tabs.TabPane tab={`活动委托[${this.orderState.ordres.size}]`} key="2">
+				<Tabs.TabPane tab={`活动委托[${this.orderState.activeOrderCount}]`} key="2">
 					<OrderTable />
 				</Tabs.TabPane>
 			</Tabs>

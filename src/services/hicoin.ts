@@ -1,5 +1,6 @@
 import { di, HttpFactory } from 'jsmodules';
 import TokenService from './token';
+import { __BITMEX_SEC__ } from '../config/bitmex';
 
 export default class HicoinService {
 	@di.Inject() hicoin_api_v1: HttpFactory;
@@ -12,7 +13,7 @@ export default class HicoinService {
 			postParams = {};
 		}
 		return this.hicoin_api_v1.url('/Signature').get({
-			sec: 'InstrumentState',
+			sec: __BITMEX_SEC__,
 			httpMethod,
 			apiPath,
 			...postParams
