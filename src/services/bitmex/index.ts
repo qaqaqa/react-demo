@@ -92,7 +92,7 @@ export default class BitmexService {
 		var api = '/order';
 		var data = {
 			symbol,
-			price,
+			price: parseFloat(price),
 			ordType: 'Limit',
 			execInst: 'Close',
 			text: 'Position Close from testnet.bitmex.com'
