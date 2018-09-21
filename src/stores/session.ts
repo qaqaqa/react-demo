@@ -40,7 +40,6 @@ export class SessionState {
 
     async login(username, password) {
         var result = await this.hicoinService.login(username, password);
-        debugger;
         if (result.data) {
             this.isAuthenticated = true;
             this.email = username;
