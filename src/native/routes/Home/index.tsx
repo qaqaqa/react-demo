@@ -20,7 +20,7 @@ class Home extends React.Component<any, any> {
     render() {
         return <ScrollView
             keyboardShouldPersistTaps={true}
-            style={{ backgroundColor: 'gray' }}>
+            style={{ backgroundColor: 'white' }}>
             <View style={{ marginTop: 30 }} />
             <Panel1 />
             <View style={{ backgroundColor: 'yellow', height: 1, width: '100%', marginTop: 20 }}></View>

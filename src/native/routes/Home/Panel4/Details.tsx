@@ -192,18 +192,22 @@ class Details extends React.Component<Props, any> {
         const { name } = this.props;
         var view = null;
         if (name == '仓位') {
-            view = <TextInput
-                ref='input3'
-                autoFocus={true}
-                returnKeyType="done"
-                placeholder={'输入平仓价格'}
-                autoCorrect={false}
-                placeholderTextColor="black"
-                style={styles.textInput}>
-            </TextInput>
+
             this.positionState.positions.forEach((value, key) => {
                 data.push(value);
             });
+            if (data) {
+                view = <TextInput
+                    ref='input3'
+                    autoFocus={true}
+                    returnKeyType="done"
+                    placeholder={'输入平仓价格'}
+                    autoCorrect={false}
+                    placeholderTextColor="black"
+                    style={styles.textInput}>
+                </TextInput>
+            }
+
         }
         else if (name == '活动委托') {
             this.orderState.ordres.forEach((value, key) => {
@@ -236,19 +240,19 @@ const styles = StyleSheet.create({
         paddingBottom: 30
     },
     title: {
-        color: 'white',
+        color: 'black',
         fontSize: 15,
         marginTop: 20,
         paddingBottom: 20
     },
     textInputTitle: {
         marginLeft: 20,
-        color: 'white',
+        color: 'black',
         fontSize: 15,
         marginTop: 7
     },
     touchable1: {
-        backgroundColor: 'white',
+        backgroundColor: 'red',
         height: 40,
         width: 80,
         alignItems: 'center',
@@ -258,7 +262,7 @@ const styles = StyleSheet.create({
         marginTop: 20
     },
     touchable2: {
-        backgroundColor: 'white',
+        backgroundColor: 'yellow',
         height: 40,
         width: 80,
         alignItems: 'center',
@@ -276,7 +280,7 @@ const styles = StyleSheet.create({
         marginLeft: '50%',
     },
     textInput: {
-        backgroundColor: 'white',
+        backgroundColor: 'gray',
         width: '30%',
         marginLeft: 15,
         fontSize: 18,

@@ -34,18 +34,18 @@ const styles = StyleSheet.create({
         marginLeft: 20,
     },
     title: {
-        color: 'white',
+        color: 'black',
         fontSize: 15,
         marginTop: 20
     },
     priceText:{
-        color: 'white',
+        color: 'black',
         fontSize: 35,
         marginTop: 7,
         alignSelf: 'center',
     },
     textInputTitle: {
-        color: 'white',
+        color: 'black',
         fontSize: 15,
         marginTop: 7
     },

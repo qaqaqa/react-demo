@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
         marginLeft: 20
     },
     title: {
-        color: 'white',
+        color: 'black',
         fontSize: 15,
         marginTop: 20
     },
@@ -110,19 +110,19 @@ const styles = StyleSheet.create({
         marginTop: 15,
     },
     textInputTitle: {
-        color: 'white',
+        color: 'black',
         fontSize: 15,
         marginTop: 7
     },
     textInput: {
-        backgroundColor: 'white',
+        backgroundColor: 'gray',
         width: '80%',
         marginLeft: 15,
         fontSize: 25,
         borderRadius: 5,
     },
     touchable1: {
-        backgroundColor: 'white',
+        backgroundColor: 'red',
         height: 40,
         width: 80,
         alignItems: 'center',
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
     },
     touchable2: {
-        backgroundColor: 'white',
+        backgroundColor: 'yellow',
         height: 40,
         width: 80,
         alignItems: 'center',

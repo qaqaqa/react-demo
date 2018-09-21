@@ -28,12 +28,12 @@ const styles = StyleSheet.create({
         marginTop:20
     },
     title: {
-        color: 'white',
+        color: 'black',
         fontSize: 15,
         marginTop: 20
     },
     textInputTitle: {
-        color: 'white',
+        color: 'black',
         fontSize: 15,
         marginTop: 7
     },
