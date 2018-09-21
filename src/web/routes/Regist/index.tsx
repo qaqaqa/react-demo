@@ -1,28 +1,31 @@
 import * as React from 'react';
-import LoginForm from './components/LoginForm';
+import RegistForm from './components/RegistForm';
 import { Redirect, RouteComponentProps } from 'react-router';
 import './style.less';
 import { message } from 'antd';
 import { di } from 'jsmodules';
-import { SessionState } from '../../../stores/session';
+import HicoinService from '../../../services/hicoin';
 
-class Login extends React.Component<RouteComponentProps<any>, any> {
+class Regist extends React.Component<RouteComponentProps<any>, any> {
+
+    @di.Inject() hicoinService: HicoinService;
+
     state = {
         redirectToReferrer: false
     };
 
-    @di.Inject() session: SessionState;
-
     handleSubmit = async (values) => {
         try {
-            var success = await this.session.login(values.userName, values.password);
-            if (success) {
+            var response = await this.hicoinService.regist(values.userName, values.password);
+            if (response.data) {
+                alert("已经提交注册,注册成功后我们将用邮件通知你");
                 this.setState({ redirectToReferrer: true });
             } else {
-                alert("登录失败");
+                alert("已经注册过了,如果没有收到邮件,请联系管理员");
+                this.setState({ redirectToReferrer: true });
             }
         } catch (ex) {
-            alert('用户名或密码错误');
+            alert('注册失败:' + ex.message);
         } finally {
         }
     };
@@ -38,12 +41,12 @@ class Login extends React.Component<RouteComponentProps<any>, any> {
         return (
             <div className="login-page">
                 <div className="logo">
-                    <span>登录</span>
+                    <span>注册</span>
                 </div>
-                <LoginForm onSubmit={this.handleSubmit} />
+                <RegistForm onSubmit={this.handleSubmit} />
             </div>
         );
     }
 }
 
-export default Login;
+export default Regist;
