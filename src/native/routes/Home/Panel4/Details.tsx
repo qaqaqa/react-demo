@@ -2,11 +2,13 @@ import * as React from 'react';
 import { TextInput, Text, StyleSheet, View, TouchableOpacity, Slider, FlatList } from 'react-native'
 var Dimensions = require('Dimensions');
 const width = Dimensions.get("window").width;
+const height = Dimensions.get("window").height;
 import CoinLineChart from '../components/CoinLineChart'
 import { observer } from 'mobx-react';
 import { di } from 'jsmodules';
 import { OrderState, PositionState } from '../../../../stores/bitmex/subscribes';
-
+import BitmexService from '../../../../services/bitmex';
+var ping = {};
 
 type Props = {
     name: string,
@@ -16,16 +18,72 @@ class Details extends React.Component<Props, any> {
 
     @di.Inject() orderState: OrderState;
     @di.Inject() positionState: PositionState;
-
+    @di.Inject() bitmexService: BitmexService;
 
     _extraUniqueKey(item, index) {
         return "index" + index + item;
     }
 
+    handleClear = (orderID) => {
+        this.orderState.ordres.delete(orderID);
+    };
+
+    handleCancel = (orderID) => {
+        this.bitmexService.cancelOrder(orderID);
+    };
+
+    handleSellLimit = (symbol, orderID) => {
+        var input: any = this.refs.input3;
+        var lastPrice = input._lastNativeText;
+        if (lastPrice) {
+            this.bitmexService.closeLimit(lastPrice, symbol);
+        }
+    };
+
+    handleSellMarket = (symbol) => {
+        this.bitmexService.closeMarket();
+    };
+
+    handleCancelOrder = (orderId) => {
+        this.bitmexService.cancelOrder(orderId);
+    };
+
     _renderItem = (entry) => {
         entry = entry.item;
         const { name } = this.props;
         if (name == '仓位') {
+            var view1 = null;
+            var view2 = null;
+            var item = ping[entry.symbol];
+            if (item) {
+                view1 = (
+                    <View>
+                        <Text style={styles.textInputTitle}>在{entry.price} 的平仓委托</Text>
+                        <TouchableOpacity style={styles.touchable1} onPress={() => {
+                            this.handleClear(entry.orderID);
+                        }}>
+                            <Text style={styles.touchableText1}>取消</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                );
+            }
+            view2 = (
+                <View style={{ flexDirection: 'row' }}>
+                    <TouchableOpacity style={styles.touchable1} onPress={() => {
+                        this.handleSellLimit(entry.symbol, entry.orderID);
+                    }}>
+                        <Text style={styles.touchableText1}>平仓</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.touchable2} onPress={
+                        () => {
+                            this.handleSellMarket(entry.lastPrice);
+                        }
+                    }>
+                        <Text style={styles.touchableText1}>市价</Text>
+                    </TouchableOpacity>
+                </View>
+            )
             return <View style={{ marginTop: 20, borderColor: 'red', borderWidth: 2, borderRadius: 5 }}>
                 <Text style={styles.textInputTitle}>合约：{entry.symbol}</Text>
                 <Text style={styles.textInputTitle}>目前仓位数量：{entry.currentQty}</Text>
@@ -36,7 +94,12 @@ class Details extends React.Component<Props, any> {
                 <Text style={styles.textInputTitle}>保证金：{entry.assignedMargin}</Text>
                 <Text style={styles.textInputTitle}>未实现盈亏(回报率%)：{entry.unrealisedPnl}</Text>
                 <Text style={styles.textInputTitle}>已实现盈亏：{entry.combinedRealisedPnl}</Text>
-                <Text style={styles.textInputTitle}>平仓：{entry.actions}</Text>
+                {
+                    view1
+                }
+                {
+                    view2
+                }
             </View>
         }
         else if (name == '已平仓仓位') {
@@ -46,6 +109,24 @@ class Details extends React.Component<Props, any> {
             </View>
         }
         else if (name == '活动委托') {
+            var view = null;
+            if (entry.ordStatus == 'Filled' || entry.ordStatus == 'Canceled') {
+                view = (
+                    <TouchableOpacity style={styles.touchable1} onPress={() => {
+                        this.handleClear(entry.orderID);
+                    }}>
+                        <Text style={styles.touchableText1}>清除</Text>
+                    </TouchableOpacity>
+                );
+            } else {
+                view = (
+                    <TouchableOpacity style={styles.touchable1} onPress={() => {
+                        this.handleCancel(entry.orderID);
+                    }}>
+                        <Text style={styles.touchableText1}>取消</Text>
+                    </TouchableOpacity>
+                );
+            }
             return <View style={{ marginTop: 20, borderColor: 'red', borderWidth: 2, borderRadius: 5 }}>
                 <Text style={styles.textInputTitle}>合约：{entry.symbol}</Text>
                 <Text style={styles.textInputTitle}>数量：{entry.orderQty}</Text>
@@ -57,6 +138,9 @@ class Details extends React.Component<Props, any> {
                 <Text style={styles.textInputTitle}>类型：{entry.ordType}</Text>
                 <Text style={styles.textInputTitle}>状态：{entry.ordStatus}</Text>
                 <Text style={styles.textInputTitle}>时间：{entry.timestamp}</Text>
+                {
+                    view
+                }
             </View>
         }
         else if (name == '止损委托') {
@@ -106,16 +190,36 @@ class Details extends React.Component<Props, any> {
     render() {
         var data = [];
         const { name } = this.props;
+        var view = null;
         if (name == '仓位') {
+            view = <TextInput
+                ref='input3'
+                autoFocus={true}
+                returnKeyType="done"
+                placeholder={'输入平仓价格'}
+                autoCorrect={false}
+                placeholderTextColor="black"
+                style={styles.textInput}>
+            </TextInput>
             this.positionState.positions.forEach((value, key) => {
                 data.push(value);
             });
         }
-        else if (name == '活动委托')
+        else if (name == '活动委托') {
             this.orderState.ordres.forEach((value, key) => {
                 data.push(value);
             });
+            this.orderState.ordres.forEach((value, key) => {
+                if (value.execInst == 'Close' && value.ordStatus != 'Canceled') {
+                    ping[value.symbol] = {
+                        price: value.price,
+                        orderId: value.orderID
+                    };
+                }
+            });
+        }
         return <View style={styles.bgView}>
+            {view}
             <FlatList
                 keyExtractor={this._extraUniqueKey}
                 onEndReachedThreshold={0.01}
@@ -142,6 +246,42 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 15,
         marginTop: 7
+    },
+    touchable1: {
+        backgroundColor: 'white',
+        height: 40,
+        width: 80,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 5,
+        marginLeft: 20,
+        marginTop: 20
+    },
+    touchable2: {
+        backgroundColor: 'white',
+        height: 40,
+        width: 80,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 5,
+        marginLeft: '10%',
+        marginTop: 20
+
+    },
+    touchableText1: {
+        backgroundColor: 'transparent',
+    },
+    touchableText2: {
+        backgroundColor: '#00000000',
+        marginLeft: '50%',
+    },
+    textInput: {
+        backgroundColor: 'white',
+        width: '30%',
+        marginLeft: 15,
+        fontSize: 18,
+        borderRadius: 5,
+        marginTop: 20
     },
 })
 

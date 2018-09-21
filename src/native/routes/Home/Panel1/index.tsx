@@ -79,13 +79,13 @@ class Panel1 extends React.Component<any, any> {
             <View style={styles.bgTextInputView}>
                 <View>
                     <TouchableOpacity style={styles.touchable1} onPress={this.handleBuy}>
-                        <Text style={styles.touchableText}>做多</Text>
+                        <Text style={styles.touchableText1}>做多</Text>
                     </TouchableOpacity>
-                    <Text style={styles.touchableText}>成本：0.00001</Text>
+                    <Text style={styles.touchableText1}>成本：0.00001</Text>
                 </View>
                 <View>
                     <TouchableOpacity style={styles.touchable2} onPress={this.handleSell}>
-                        <Text style={styles.touchableText}>做空</Text>
+                        <Text style={styles.touchableText1}>做空</Text>
                     </TouchableOpacity>
                     <Text style={styles.touchableText1}>成本：0.00001</Text>
                 </View>
@@ -138,10 +138,10 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginLeft: '50%',
     },
-    touchableText: {
+    touchableText1: {
         backgroundColor: 'transparent',
     },
-    touchableText1: {
+    touchableText2: {
         backgroundColor: '#00000000',
         marginLeft: '50%',
     }
