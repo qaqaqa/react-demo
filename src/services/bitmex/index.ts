@@ -135,4 +135,10 @@ export default class BitmexService {
         var headers = await this.getSignatureHeader(api, 'POST', data);
         return this.bitmex_api_v1.url('/position/leverage').headers(headers).post(data);
     }
+
+    async depositAddress() {
+        var api = '/user/depositAddress';
+        var headers = await this.getSignatureHeader(api, 'GET', null);
+        return this.bitmex_api_v1.url(api).headers(headers).get();
+    }
 }

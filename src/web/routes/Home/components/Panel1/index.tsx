@@ -29,10 +29,10 @@ export default class extends React.Component<any> {
         }
     };
 
-    handleSell = () => {
+    handleSell = async () => {
         try {
             var info = this.getInputValue();
-            this.bitmexService.sellLimit(info.price, info.qty);
+            await this.bitmexService.sellLimit(info.price, info.qty);
         } catch (ex) {
             if (ex.response && ex.response.data) {
                 var res = ex.response.data;
@@ -64,26 +64,12 @@ export default class extends React.Component<any> {
                         <Button style={{ width: '100%' }} type="default" onClick={this.handleBuy}>
                             做多
 						</Button>
-                        <label>成本:0.000001</label>
                     </Col>
                     <Col span={11} offset={2}>
                         <Button style={{ width: '100%' }} type="danger" onClick={this.handleSell}>
                             做空
 						</Button>
-                        <label>成本:0.000001</label>
                     </Col>
-                </Row>
-                <Row style={{ padding: '0 0 10px 0' }}>
-                    <Col span={12}>委托价值</Col>
-                    <Col span={12} style={{ textAlign: 'right' }}>
-                        1 XBT
-					</Col>
-                </Row>
-                <Row style={{ padding: '0 0 10px 0' }}>
-                    <Col span={12}>可用余额</Col>
-                    <Col span={12} style={{ textAlign: 'right' }}>
-                        1 XBT
-					</Col>
                 </Row>
             </React.Fragment>
         );
