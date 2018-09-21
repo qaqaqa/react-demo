@@ -5,6 +5,7 @@ import Panel2 from './Panel2'
 import Panel3 from './Panel3'
 import Panel4 from './Panel4'
 import Panel5 from './Panel5'
+import Panel6 from './Panel6';
 
 class Home extends React.Component<any, any> {
     state = {
@@ -29,6 +30,8 @@ class Home extends React.Component<any, any> {
             <Panel3 />
             <View style={{ backgroundColor: 'yellow', height: 1, width: '100%', marginTop: 20 }}></View>
             <Panel4 />
+            <View style={{ backgroundColor: 'yellow', height: 1, width: '100%', marginTop: 20 }}></View>
+            <Panel6 />
             <View style={{ backgroundColor: 'yellow', height: 1, width: '100%', marginTop: 20 }}></View>
             <Panel5 />
         </ScrollView>

@@ -3,16 +3,19 @@ import { View, TextInput, StyleSheet, TouchableOpacity, Text } from 'react-nativ
 import { di } from 'jsmodules';
 import HicoinService from '../../../services/hicoin';
 import { SessionState } from '../../../stores/session';
+import { observer } from 'mobx-react';
 
+@observer
 class Account extends React.Component<any, any> {
     @di.Inject() hicoinService: HicoinService;
     @di.Inject() session: SessionState;
     OnLogin=async()=>{
-        // this.props.history.push("/home");
         var emailInputText:any = this.refs.email;
         var passwordInputText:any = this.refs.password;
         var email = emailInputText._lastNativeText;
         var password = passwordInputText._lastNativeText;
+        email = 'Fanlin9527@gmail.com';
+        password = '123456';
         if (email && password) {
             try {
                 var success = await this.session.login(email, password);
@@ -22,7 +25,7 @@ class Account extends React.Component<any, any> {
                     alert("登录失败");
                 }
             } catch (ex) {
-                alert('用户名或密码错误');
+                alert(ex.message);
             } finally {
             }
         }
