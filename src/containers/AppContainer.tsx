@@ -8,6 +8,7 @@ import HicoinService from '../services/hicoin';
 import BitmexService from '../services/bitmex';
 import { BitmexWebSocketMgr } from '../services/bitmex/chatmgr';
 import { OrderState, PositionState, InstrumentState, MarginState } from '../stores/bitmex/subscribes';
+import { SessionState } from '../stores/session';
 
 const { container } = di;
 
@@ -24,16 +25,16 @@ container.bind('app').to(AppState).isSingletonScope();
 container.bind('kvStorage').to(WebKeyValueStorage).params('Main').isSingletonScope();
 
 container
-	.bind('bitmexWebSocketMgr')
-	.to(BitmexWebSocketMgr)
-	.params((subscribe?) => {
-		var p = '';
-		if (subscribe) {
-			p = `&subscribe=${subscribe}`;
-		}
-		return 'wss://testnet.bitmex.com/realtime?heartbeat=1' + p;
-	})
-	.isSingletonScope();
+    .bind('bitmexWebSocketMgr')
+    .to(BitmexWebSocketMgr)
+    .params((subscribe?) => {
+        var p = '';
+        if (subscribe) {
+            p = `&subscribe=${subscribe}`;
+        }
+        return 'wss://testnet.bitmex.com/realtime?heartbeat=1' + p;
+    })
+    .isSingletonScope();
 
 //#endregion
 //#region services
@@ -47,8 +48,11 @@ container.bind('orderState').to(OrderState).isSingletonScope();
 container.bind('positionState').to(PositionState).isSingletonScope();
 container.bind('instrumentState').to(InstrumentState).isSingletonScope();
 container.bind('marginState').to(MarginState).isSingletonScope();
+
+container.bind('session').to(SessionState).isSingletonScope();
+
 //#endregion
 
 export function AppContainer(props) {
-	return <React.Fragment>{props.children}</React.Fragment>;
+    return <React.Fragment>{props.children}</React.Fragment>;
 }

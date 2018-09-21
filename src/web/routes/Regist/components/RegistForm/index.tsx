@@ -12,7 +12,7 @@ interface LoginFormProps extends FormComponentProps {
 }
 
 
-class LoginForm extends React.Component<LoginFormProps, {}> {
+class RegistForm extends React.Component<LoginFormProps, {}> {
 
     handleSubmit = (e) => {
 
@@ -23,7 +23,6 @@ class LoginForm extends React.Component<LoginFormProps, {}> {
             }
         });
     }
-
 
     public render(): JSX.Element {
         const { getFieldDecorator } = this.props.form;
@@ -47,14 +46,14 @@ class LoginForm extends React.Component<LoginFormProps, {}> {
             </Form.Item>
             <Form.Item>
                 <Button type="primary" htmlType="submit" className="login-form-button">
-                    登录
+                    注册
                 </Button>
-                <Link to="/regist">
-                    没有账号,注册
+                <Link to="/login">
+                    已有账号,去登录
                 </Link>
             </Form.Item>
         </Form>
     }
 }
 
-export default Form.create()(LoginForm);
+export default Form.create()(RegistForm);
