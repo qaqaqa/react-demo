@@ -58,7 +58,9 @@ export default class PositionTable extends React.Component<OrderTableProps, any>
     public render() {
         var positions = [];
         this.positionState.positions.forEach((value, key) => {
-            positions.push(value);
+            if (value.currentQty != 0) {
+                positions.push(value);
+            }
         });
         var ping = {};
         this.orderState.ordres.forEach((value, key) => {
@@ -83,13 +85,18 @@ export default class PositionTable extends React.Component<OrderTableProps, any>
                 <Column title="标记价格" dataIndex="markPrice" key="markPrice" />
                 <Column title="强平价格" dataIndex="liquidationPrice" key="liquidationPrice" />
                 <Column title="保证金" dataIndex="maintMargin" key="assignedMargin" render={(maintMargin, record: any) => {
+
                     return <span>{maintMargin / Math.pow(10, 8)} XBT({record.crossMargin ? '全仓' : `${record.leverage}x`})</span>
+
                 }} />
                 <Column title="未实现盈亏" dataIndex="unrealisedGrossPnl" key="unrealisedPnl" render={(value, record: any) => {
 
                     return `${value / Math.pow(10, 8)} XBT(${(record.unrealisedRoePcnt * 100).toFixed(2)})%`
                 }} />
                 <Column title="已实现盈亏" dataIndex="realisedGrossPnl" key="realisedGrossPnl" render={(value, record: any) => {
+                    if (!value) {
+                        return `0 XBT`
+                    }
                     return `${value / Math.pow(10, 8)} XBT`
                 }} />
                 <Column

@@ -76,9 +76,6 @@ export class PositionState {
             this.positions.clear();
         }
         for (const item of data) {
-            if (item.currentQty == 0) {
-                action = 'delete';
-            }
             switch (action) {
                 case 'delete':
                     this.positions.delete(item.symbol);

@@ -10,6 +10,10 @@ export default class extends React.Component<any> {
     @di.Inject() positionState: PositionState;
     @di.Inject() bitmexService: BitmexService;
 
+    state = {
+        leverage: 0
+    }
+
     timer;
 
     handleChange = (value) => {
@@ -17,6 +21,9 @@ export default class extends React.Component<any> {
         this.timer = setTimeout(() => {
             this.bitmexService.setLeverage(value);
         }, 500);
+        this.setState({
+            leverage: value
+        })
     };
 
     render() {
@@ -25,7 +32,7 @@ export default class extends React.Component<any> {
             avgCostPrice = 0,
             unrealisedRoePcnt = 0,
             liquidationPrice = 0,
-            leverage = 0;
+            leverage = this.state.leverage;
         if (xbtusd) {
             currentQty = xbtusd.currentQty;
             avgCostPrice = xbtusd.avgCostPrice;
@@ -63,7 +70,7 @@ export default class extends React.Component<any> {
                 <Row style={{ padding: '0 0 10px 0' }}>
                     <Col span={12}>杠杆</Col>
                     <Col span={24}>
-                        <Slider defaultValue={leverage} onChange={this.handleChange} min={0} max={100} />
+                        <Slider value={leverage} onChange={this.handleChange} min={0} max={100} />
                     </Col>
                 </Row>
             </React.Fragment>
