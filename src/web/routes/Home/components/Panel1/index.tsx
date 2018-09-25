@@ -3,9 +3,14 @@ import { Collapse, Row, Input, Form, Col, Divider, Button } from 'antd';
 import { di } from 'jsmodules';
 import BitmexService from '../../../../../services/bitmex';
 import toFixed2 from '../../../../../utils/toFixed2';
+import { SessionState } from '../../../../../stores/session';
+import { observer } from 'mobx-react';
 
+@observer
 export default class extends React.Component<any> {
     @di.Inject() bitmexService: BitmexService;
+
+    @di.Inject() session: SessionState;
 
     state = {
         count: 0,

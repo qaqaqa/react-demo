@@ -24,31 +24,44 @@ export default class extends React.Component<any> {
         if (!xbtusd) {
             return null;
         }
-        var leverage = xbtusd.crossMargin ? 0 : xbtusd.leverage;
+        var currentQty = 0,
+            avgCostPrice = 0,
+            unrealisedRoePcnt = 0,
+            liquidationPrice = 0,
+            leverage = 0;
+
+        if (xbtusd) {
+            currentQty = xbtusd.currentQty;
+            avgCostPrice = xbtusd.avgCostPrice;
+            unrealisedRoePcnt = xbtusd.unrealisedRoePcnt;
+            liquidationPrice = xbtusd.liquidationPrice;
+            leverage = xbtusd.crossMargin ? 0 : xbtusd.leverage;
+        }
+
         return (
             <React.Fragment>
                 <Row style={{ padding: '0 0 10px 0' }}>
                     <Col span={12}>合约数</Col>
                     <Col span={12} style={{ textAlign: 'right' }}>
-                        {xbtusd.currentQty}
+                        {currentQty}
                     </Col>
                 </Row>
                 <Row style={{ padding: '0 0 10px 0' }}>
                     <Col span={12}>开仓价格</Col>
                     <Col span={12} style={{ textAlign: 'right' }}>
-                        {xbtusd.avgCostPrice}
+                        {avgCostPrice}
                     </Col>
                 </Row>
                 <Row style={{ padding: '0 0 10px 0' }}>
                     <Col span={12}>回报率</Col>
                     <Col span={12} style={{ textAlign: 'right' }}>
-                        {(xbtusd.unrealisedRoePcnt * 100).toFixed(2)} %
+                        {(unrealisedRoePcnt * 100).toFixed(2)} %
 					</Col>
                 </Row>
                 <Row style={{ padding: '0 0 10px 0' }}>
                     <Col span={12}>强平价格</Col>
                     <Col span={12} style={{ textAlign: 'right' }}>
-                        {xbtusd.liquidationPrice}
+                        {liquidationPrice}
                     </Col>
                 </Row>
                 <Row style={{ padding: '0 0 10px 0' }}>
