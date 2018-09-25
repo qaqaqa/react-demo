@@ -4,19 +4,28 @@ import { observer } from 'mobx-react';
 import { di } from 'jsmodules';
 import { MarginState } from '../../../../../stores/bitmex/subscribes';
 import BitmexService from '../../../../../services/bitmex';
+import { SessionState } from '../../../../../stores/session';
 
 @observer
 export default class extends React.Component<any> {
     @di.Inject() bitmexService: BitmexService;
     @di.Inject() marginState: MarginState;
+    @di.Inject() session: SessionState;
+
     state = {
         depositAddress: ""
     }
     async componentDidMount() {
-        var response = await this.bitmexService.depositAddress();
-        if (response.data) {
-            this.setState({
-                depositAddress: response.data
+        if (this.session.isActive) {
+            var response = await this.bitmexService.depositAddress();
+            if (response.data) {
+                this.setState({
+                    depositAddress: response.data
+                })
+            }
+        } else {
+            this.session.on('Active').then(() => {
+                this.componentDidMount();
             })
         }
     }

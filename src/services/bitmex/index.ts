@@ -38,6 +38,9 @@ export default class BitmexService {
      * @param symbol
      */
     async buyLimit(price, orderQty, symbol = 'XBTUSD') {
+        if (!this.session.isActive) {
+            throw new Error("账号未激活")
+        }
         var api = '/order';
         var data = {
             ordType: 'Limit',
@@ -58,6 +61,9 @@ export default class BitmexService {
      * @param symbol
      */
     async sellLimit(price, orderQty, symbol = 'XBTUSD') {
+        if (!this.session.isActive) {
+            throw new Error("账号未激活")
+        }
         var api = '/order';
         var data = {
             ordType: 'Limit',

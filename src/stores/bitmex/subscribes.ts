@@ -2,6 +2,7 @@ import { observable, computed } from 'mobx';
 import { di } from 'jsmodules';
 import { BitmexWebSocketMgr } from '../../services/bitmex/chatmgr';
 import HicoinService from '../../services/hicoin';
+import { SessionState } from '../session';
 
 class ConnectMgr {
     @di.Inject() private hicoinService: HicoinService;
@@ -14,6 +15,7 @@ class ConnectMgr {
 
 export class OrderState {
     @di.Inject() bitmexWebSocketMgr: BitmexWebSocketMgr;
+
 
     ordres = observable.map({}, { deep: false });
 
@@ -30,11 +32,12 @@ export class OrderState {
 
     constructor() {
         this.bitmexWebSocketMgr.on('order').then(this.resolveOrder);
-        this.init();
+        this.bitmexWebSocketMgr.on('authKeys').then(this.init);
     }
 
-    async init() {
+    init = async () => {
         this.bitmexWebSocketMgr.addSub('order');
+
     }
 
     resolveOrder = (data, action, message) => {
@@ -61,10 +64,10 @@ export class PositionState {
 
     constructor() {
         this.bitmexWebSocketMgr.on('position').then(this.resolveOrder);
-        this.init();
+        this.bitmexWebSocketMgr.on('authKeys').then(this.init);
     }
 
-    async init() {
+    init = async () => {
         this.bitmexWebSocketMgr.addSub('position');
     }
 
@@ -98,7 +101,7 @@ export class InstrumentState {
         this.init();
     }
 
-    async init() {
+    init = async () => {
         this.bitmexWebSocketMgr.addSub('instrument');
     }
 
@@ -120,15 +123,16 @@ export class InstrumentState {
 }
 export class MarginState {
     @di.Inject() bitmexWebSocketMgr: BitmexWebSocketMgr;
+    @di.Inject() session: SessionState;
 
     margin = observable.map({}, { deep: false });
 
     constructor() {
         this.bitmexWebSocketMgr.on('margin').then(this.resolveOrder);
-        this.init();
+        this.bitmexWebSocketMgr.on("authKeys").then(this.init);
     }
 
-    async init() {
+    init = async () => {
         this.bitmexWebSocketMgr.addSub('margin');
     }
 

@@ -1,8 +1,10 @@
 import { di } from 'jsmodules';
 import HicoinService from '../services/hicoin';
 import { IKeyValueStorage } from '../storage/IKeyValueStorage';
+import { observable } from 'mobx';
+import { Events } from 'jsmodules/lib/events';
 
-export class SessionState {
+export class SessionState extends Events {
 
     @di.Inject() hicoinService: HicoinService
 
@@ -13,6 +15,8 @@ export class SessionState {
     email: string
 
     private app_id: string;
+
+    @observable isActive = false;
 
     async loadSessionState() {
         var str = await this.kvStorage.getAsync("__u");
@@ -38,12 +42,31 @@ export class SessionState {
         }
     }
 
+    async checkActive() {
+        var response = await this.hicoinService.isActive(this.email);
+        if (!!response.data) {
+            await this.saveSessionState(response.data);
+            this.isActive = true;
+            this.trigger('Active')
+        } else {
+            setTimeout(() => {
+                this.checkActive()
+            }, 5000);
+        }
+    }
+
     async login(username, password) {
-        var result = await this.hicoinService.login(username, password);
-        if (result.data) {
+        var response = await this.hicoinService.login(username, password);
+        var result = response.data;
+        if (result.success) {
             this.isAuthenticated = true;
             this.email = username;
-            await this.saveSessionState(result.data);
+            if (!!result.key) {
+                this.isActive = !!result.key;
+                await this.saveSessionState(result.key);
+            } else {
+                this.checkActive();
+            }
             return true;
         }
         return false;

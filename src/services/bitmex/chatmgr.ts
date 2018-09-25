@@ -64,14 +64,11 @@ export class BitmexWebSocketMgr extends Events {
     private handleOpen = async (event) => {
         Logger.info('WS:聊天服务连接成功');
         reconnectTime = 1000;
-        var response = await this.hicoinService.getSignature('/realtime', 'GET', null);
-        var __BITMEX_APIKEY__ = await this.session.getAppId();
-
-        var data = response.data;
-        this.send({ op: 'authKeyExpires', args: [__BITMEX_APIKEY__, data.expires, data.sig] });
+        this.authKeys();
         this.__last_sub__ = {};
         this.refreshSubs();
     };
+
     private handleClose = (event) => {
         Logger.info('WS:聊天服务连接断开', event.target.url, event.code);
         this.__webSocket__ = null;
@@ -101,8 +98,13 @@ export class BitmexWebSocketMgr extends Events {
             if (message.table) {
                 this.trigger(message.table, message.data, message.action, message);
             }
-            if (message.subscribe) {
-                this.trigger(message.subscribe + '.ok', message.success, message.request, message);
+            if (message.success) {
+                if (message.request && message.request.op == 'authKeyExpires') {
+                    this.trigger('authKeys')
+                }
+                else if (message.subscribe) {
+                    this.trigger(message.subscribe + '.ok', message.success, message.request, message);
+                }
             }
         }
     };
@@ -195,12 +197,26 @@ export class BitmexWebSocketMgr extends Events {
         return this;
     }
 
+    async authKeys() {
+        if (this.session.isActive) {
+            var response = await this.hicoinService.getSignature('/realtime', 'GET', null);
+            var __BITMEX_APIKEY__ = await this.session.getAppId();
+            var data = response.data;
+            this.send({ op: 'authKeyExpires', args: [__BITMEX_APIKEY__, data.expires, data.sig] });
+        } else {
+            this.session.on("Active").then(() => {
+                this.authKeys();
+            })
+        }
+    }
+
     reconnect(timeout = 0) {
         this.__last_sub__ = {};
         setTimeout(() => {
             //this.close().connect();
         }, timeout);
     }
+
     addSub(subName) {
         if (!this.__subs__[subName]) {
             this.__subs__[subName] = 1;
@@ -209,6 +225,7 @@ export class BitmexWebSocketMgr extends Events {
         }
         this.refreshSubs();
     }
+
     removeSub(subName) {
         if (this.__subs__[subName]) {
             this.__subs__[subName] -= 1;

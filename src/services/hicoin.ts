@@ -35,4 +35,10 @@ export default class HicoinService {
             password
         });
     }
+
+    isActive(email) {
+        return this.hicoin_api_v1.url("/user/key").get({
+            email
+        });
+    }
 }
