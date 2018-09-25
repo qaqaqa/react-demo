@@ -95,8 +95,13 @@ class Details extends React.Component<Props, any> {
                 <Text style={styles.textInputTitle}>标记价格：{entry.markPrice}</Text>
                 <Text style={styles.textInputTitle}>强平价格：{entry.liquidationPrice}</Text>
                 <Text style={styles.textInputTitle}>保证金：{entry.maintMargin / Math.pow(10, 8)} XBT({entry.crossMargin ? '全仓' : `${entry.leverage}x`})</Text>
-                <Text style={styles.textInputTitle}>未实现盈亏(回报率%)：{entry}{`${entry.unrealisedGrossPnl / Math.pow(10, 8)} XBT(${(entry.unrealisedRoePcnt * 100).toFixed(2)})%`}</Text>
-                <Text style={styles.textInputTitle}>已实现盈亏：{entry.realisedGrossPnl}?{`${entry.realisedGrossPnl / Math.pow(10, 8)} XBT`}:0 XBT</Text>
+                
+                <Text style={styles.textInputTitle}>未实现盈亏(回报率%)：{`${entry.unrealisedGrossPnl / Math.pow(10, 8)} XBT(${(entry.unrealisedRoePcnt * 100).toFixed(2)})%`}</Text>
+                <Text style={styles.textInputTitle}>已实现盈亏：
+                {
+                    entry.realisedGrossPnl?`${entry.realisedGrossPnl / Math.pow(10, 8)} XBT`:'0 XBT'
+                }
+                </Text>
                 {
                     view1
                 }
@@ -197,7 +202,9 @@ class Details extends React.Component<Props, any> {
         if (name == '仓位') {
 
             this.positionState.positions.forEach((value, key) => {
-                data.push(value);
+                if (value.currentQty != 0) {
+                    data.push(value);
+                }
             });
             var ping = {};
             this.orderState.ordres.forEach((value, key) => {
