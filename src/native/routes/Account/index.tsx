@@ -58,7 +58,7 @@ class Account extends React.Component<any, any> {
                 ref='email'
                 autoFocus={true}
                 returnKeyType="done"
-                placeholder={'Please input your username'}
+                placeholder={'username'}
                 autoCorrect={false}
                 placeholderTextColor="black"
                 style={styles.textInput}>
@@ -67,7 +67,7 @@ class Account extends React.Component<any, any> {
                 ref='password'
                 autoFocus={true}
                 returnKeyType="done"
-                placeholder={'Please input your password'}
+                placeholder={'password'}
                 autoCorrect={false}
                 placeholderTextColor="black"
                 style={styles.textInput}>
@@ -99,7 +99,8 @@ const styles = StyleSheet.create({
         paddingTop:100
     },
     textInput: {
-        backgroundColor: 'gray',
+        borderColor: 'gray',
+        borderWidth:1,
         width: '80%',
         marginLeft: 15,
         fontSize: 20,

@@ -33,13 +33,13 @@ class Panel2 extends React.Component<any, any> {
 		if (!xbtusd) {
 			return null;
 		}
-		var leverage = xbtusd.crossMargin ? 0 : xbtusd.leverage;
+        var leverage = xbtusd.crossMargin ? 0 : xbtusd.leverage;
         return <View style={styles.bgView}>
             <Text style={styles.title}>持有仓位：XBTUSD</Text>
 
             <Text style={styles.textInputTitle}>合约数：{xbtusd.currentQty}</Text>
             <Text style={styles.textInputTitle}>开仓价格：{xbtusd.avgCostPrice}</Text>
-            <Text style={styles.textInputTitle}>回报率：{xbtusd.unrealisedRoePcnt * 100} %</Text>
+            <Text style={styles.textInputTitle}>回报率：{(xbtusd.unrealisedRoePcnt * 100).toFixed(2)} %</Text>
             <Text style={styles.textInputTitle}>强平价格：{xbtusd.liquidationPrice}</Text>
             <Text style={styles.textInputTitle}>杠杆</Text>
             <Text style={{marginTop:10,fontSize:25,color:'red',marginLeft:this.state.value*width*0.8/100-this.state.value/2}}>{this.state.value}</Text>

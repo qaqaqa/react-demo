@@ -8,6 +8,11 @@ const width = Dimensions.get("window").width;
 class Panel1 extends React.Component<any, any> {
     @di.Inject() bitmexService: BitmexService;
 
+    state = {
+        count: 0,
+        price: 0
+    }
+
     getInputValue = () => {
         var input1: any = this.refs.input1;
         var input2: any = this.refs.input2;
@@ -47,6 +52,11 @@ class Panel1 extends React.Component<any, any> {
     };
 
     render() {
+        var value = '';
+        var { count, price } = this.state;
+        if (count > 0 && price > 0) {
+            value = (count / price).toFixed(4)+'XBT';
+        }
         return <View style={styles.bgView}>
             <Text style={styles.title}>买卖</Text>
             <View style={styles.bgTextInputView}>
@@ -58,6 +68,7 @@ class Panel1 extends React.Component<any, any> {
                     placeholder={''}
                     autoCorrect={false}
                     placeholderTextColor="black"
+                    onChangeText={(text) => this.setState({count:text})}
                     style={styles.textInput}>
                 </TextInput>
             </View>
@@ -70,6 +81,7 @@ class Panel1 extends React.Component<any, any> {
                     placeholder={''}
                     autoCorrect={false}
                     placeholderTextColor="black"
+                    onChangeText={(text) => this.setState({price:text})}
                     style={styles.textInput}>
                 </TextInput>
             </View>
@@ -79,17 +91,17 @@ class Panel1 extends React.Component<any, any> {
                     <TouchableOpacity style={styles.touchable1} onPress={this.handleBuy}>
                         <Text style={styles.touchableText1}>做多</Text>
                     </TouchableOpacity>
-                    <Text style={styles.touchableText1}>成本：0.00001</Text>
+                    {/* <Text style={styles.touchableText1}>成本：0.00001</Text> */}
                 </View>
                 <View>
                     <TouchableOpacity style={styles.touchable2} onPress={this.handleSell}>
                         <Text style={styles.touchableText1}>做空</Text>
                     </TouchableOpacity>
-                    <Text style={styles.touchableText1}>成本：0.00001</Text>
+                    {/* <Text style={styles.touchableText1}>成本：0.00001</Text> */}
                 </View>
             </View>
-            <Text style={styles.textInputTitle}>委托价值：0.00001XBT</Text>
-            <Text style={styles.textInputTitle}>可用余额：0.00001XBT</Text>
+            <Text style={styles.textInputTitle}>委托价值：{value}</Text>
+            {/* <Text style={styles.textInputTitle}>可用余额：0.00001XBT</Text> */}
         </View>
     }
 }
@@ -113,7 +125,8 @@ const styles = StyleSheet.create({
         marginTop: 7
     },
     textInput: {
-        backgroundColor: 'gray',
+        borderColor: 'gray',
+        borderWidth:1,
         width: '80%',
         marginLeft: 15,
         fontSize: 25,

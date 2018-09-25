@@ -23,7 +23,7 @@ class Panel3 extends React.Component<any, any> {
             <Text style={styles.textInputTitle}>BitMex指数价格：{instrument.fairPrice}</Text>
             <Text style={styles.textInputTitle}>24小时交易量：{instrument.volume24h}</Text>
             <Text style={styles.textInputTitle}>未平仓合约数量：{instrument.openInterest}</Text>
-            <Text style={styles.textInputTitle}>资金费率：{instrument.fundingRate*100}% 1小时内</Text>
+            <Text style={styles.textInputTitle}>资金费率：{instrument.fundingRate * 100} % / x?小时</Text>
             <Text style={styles.textInputTitle}>合约价值：1 USD</Text>
         </View>
     }

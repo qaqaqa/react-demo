@@ -87,13 +87,13 @@ class Details extends React.Component<Props, any> {
             return <View style={{ marginTop: 20, borderColor: 'red', borderWidth: 2, borderRadius: 5 }}>
                 <Text style={styles.textInputTitle}>合约：{entry.symbol}</Text>
                 <Text style={styles.textInputTitle}>目前仓位数量：{entry.currentQty}</Text>
-                <Text style={styles.textInputTitle}>价值：{entry.homeNotionalCurr}</Text>
+                <Text style={styles.textInputTitle}>价值：{entry.homeNotional}</Text>
                 <Text style={styles.textInputTitle}>开仓价格：{entry.avgCostPrice}</Text>
                 <Text style={styles.textInputTitle}>标记价格：{entry.markPrice}</Text>
                 <Text style={styles.textInputTitle}>强平价格：{entry.liquidationPrice}</Text>
-                <Text style={styles.textInputTitle}>保证金：{entry.assignedMargin}</Text>
-                <Text style={styles.textInputTitle}>未实现盈亏(回报率%)：{entry.unrealisedPnl}</Text>
-                <Text style={styles.textInputTitle}>已实现盈亏：{entry.combinedRealisedPnl}</Text>
+                <Text style={styles.textInputTitle}>保证金：{entry.maintMargin / Math.pow(10, 8)} XBT({entry.crossMargin ? '全仓' : `${entry.leverage}x`})</Text>
+                <Text style={styles.textInputTitle}>未实现盈亏(回报率%)：{`${entry.unrealisedGrossPnl / Math.pow(10, 8)} XBT(${(entry.unrealisedRoePcnt * 100).toFixed(2)})%`}</Text>
+                <Text style={styles.textInputTitle}>已实现盈亏：{`${entry.realisedGrossPnl / Math.pow(10, 8)} XBT`}</Text>
                 {
                     view1
                 }
@@ -133,7 +133,7 @@ class Details extends React.Component<Props, any> {
                 <Text style={styles.textInputTitle}>价格：{entry.price}</Text>
                 <Text style={styles.textInputTitle}>完全成交：{entry.cumQty}</Text>
                 <Text style={styles.textInputTitle}>剩余：{entry.leavesQty}</Text>
-                <Text style={styles.textInputTitle}>委托价值：{entry.grossValue}</Text>
+                <Text style={styles.textInputTitle}>委托价值：{`${(entry.orderQty / entry.price).toFixed(4)} XBT`}</Text>
                 <Text style={styles.textInputTitle}>成交价格：{entry.avgPx}</Text>
                 <Text style={styles.textInputTitle}>类型：{entry.ordType}</Text>
                 <Text style={styles.textInputTitle}>状态：{entry.ordStatus}</Text>
@@ -280,7 +280,8 @@ const styles = StyleSheet.create({
         marginLeft: '50%',
     },
     textInput: {
-        backgroundColor: 'gray',
+        borderColor: 'gray',
+        borderWidth:1,
         width: '30%',
         marginLeft: 15,
         fontSize: 18,
