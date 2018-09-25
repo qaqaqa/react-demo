@@ -62,7 +62,7 @@ export default class PositionTable extends React.Component<OrderTableProps, any>
         });
         var ping = {};
         this.orderState.ordres.forEach((value, key) => {
-            if (value.execInst == 'Close' && value.ordStatus != 'Canceled') {
+            if (value.execInst == 'Close' && value.ordStatus != 'Canceled' && value.ordStatus != 'Filled') {
                 ping[value.symbol] = {
                     price: value.price,
                     orderId: value.orderID
