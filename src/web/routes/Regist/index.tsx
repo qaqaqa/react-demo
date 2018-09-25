@@ -5,10 +5,12 @@ import './style.less';
 import { message } from 'antd';
 import { di } from 'jsmodules';
 import HicoinService from '../../../services/hicoin';
+import { SessionState } from '../../../stores/session';
 
 class Regist extends React.Component<RouteComponentProps<any>, any> {
 
     @di.Inject() hicoinService: HicoinService;
+    @di.Inject() session: SessionState;
 
     state = {
         redirectToReferrer: false
@@ -18,10 +20,14 @@ class Regist extends React.Component<RouteComponentProps<any>, any> {
         try {
             var response = await this.hicoinService.regist(values.userName, values.password);
             if (response.data) {
-                alert("已经提交注册,注册成功后我们将用邮件通知你");
-                this.setState({ redirectToReferrer: true });
+                var success = await this.session.login(values.userName, values.password);
+                if (success) {
+                    this.props.history.replace("/");
+                } else {
+                    this.setState({ redirectToReferrer: true });
+                }
             } else {
-                alert("已经注册过了,如果没有收到邮件,请联系管理员");
+                alert("此已经注册过了,你可以直接登录");
                 this.setState({ redirectToReferrer: true });
             }
         } catch (ex) {
