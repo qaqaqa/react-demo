@@ -110,7 +110,7 @@ class Details extends React.Component<Props, any> {
         }
         else if (name == '活动委托') {
             var view = null;
-            if (entry.ordStatus == 'Filled' || entry.ordStatus == 'Canceled') {
+            if (entry.ordStatus == 'Filled' || entry.ordStatus == 'Canceled' || entry.orderState == 'Rejected') {
                 view = (
                     <TouchableOpacity style={styles.touchable1} onPress={() => {
                         this.handleClear(entry.orderID);

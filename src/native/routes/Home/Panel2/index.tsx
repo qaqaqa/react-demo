@@ -46,6 +46,7 @@ class Panel2 extends React.Component<any, any> {
             <Slider style={styles.slider}
             maximumValue={100}
             minimumValue={1}
+            value={leverage}
             onSlidingComplete={this.onSlidingComplete}
             onValueChange={this.onValueChange}
             />
@@ -58,12 +59,12 @@ const styles = StyleSheet.create({
         marginLeft: 20,
     },
     title: {
-        color: 'white',
+        color: 'black',
         fontSize: 15,
         marginTop: 20
     },
     textInputTitle: {
-        color: 'white',
+        color: 'black',
         fontSize: 15,
         marginTop: 7
     },

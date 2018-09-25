@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     overvalLinkSelected: {
         marginLeft: margin,
         marginRight: margin,
-        backgroundColor: '#EDE9FF',
+        backgroundColor: 'red',
         borderRadius: 15,
     },
     overvalText: {

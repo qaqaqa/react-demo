@@ -14,7 +14,7 @@ class Account extends React.Component<any, any> {
         var passwordInputText:any = this.refs.password;
         var email = emailInputText._lastNativeText;
         var password = passwordInputText._lastNativeText;
-        email = 'Fanlin9527@gmail.com';
+        email = 'dengyc2013@gmail.com';
         password = '123456';
         if (email && password) {
             try {
