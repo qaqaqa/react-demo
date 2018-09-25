@@ -6,6 +6,11 @@ import BitmexService from '../../../../../services/bitmex';
 export default class extends React.Component<any> {
     @di.Inject() bitmexService: BitmexService;
 
+    state = {
+        count: 0,
+        price: 0
+    }
+
     getInputValue = () => {
         var input1: any = this.refs.input1;
         var input2: any = this.refs.input2;
@@ -46,17 +51,22 @@ export default class extends React.Component<any> {
     getUser = () => { };
 
     render() {
+        var { count, price } = this.state;
+        var value = '';
+        if (count > 0 && price > 0) {
+            value = (count / price).toFixed(4);
+        }
         return (
             <React.Fragment>
                 <Row>
                     <Col span={24}>
-                        <Input ref="input1" addonBefore="仓位" />
+                        <Input ref="input1" onInput={(e) => { this.setState({ count: +e.target['value'] }) }} addonBefore="仓位" />
                     </Col>
                 </Row>
                 <Divider style={{ margin: '10px 0' }} />
                 <Row>
                     <Col span={24}>
-                        <Input ref="input2" addonBefore="限价" />
+                        <Input ref="input2" onInput={(e) => { this.setState({ price: +e.target['value'] }) }} addonBefore="限价" />
                     </Col>
                 </Row>
                 <Row style={{ textAlign: 'center', padding: '20px 0' }}>
@@ -70,7 +80,12 @@ export default class extends React.Component<any> {
                             做空
 						</Button>
                     </Col>
-                </Row>
+                </Row><Col span={24}>
+                    <Col span={12}>委托价值</Col>
+                    <Col span={12} style={{ textAlign: 'right' }}>
+                        {value}
+                    </Col>
+                </Col>
             </React.Fragment>
         );
     }
