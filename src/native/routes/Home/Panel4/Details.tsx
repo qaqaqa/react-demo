@@ -38,6 +38,9 @@ class Details extends React.Component<Props, any> {
         if (lastPrice) {
             this.bitmexService.closeLimit(lastPrice, symbol);
         }
+        else{
+            alert('请输入强平价格')
+        }
     };
 
     handleSellMarket = (symbol) => {
@@ -92,8 +95,8 @@ class Details extends React.Component<Props, any> {
                 <Text style={styles.textInputTitle}>标记价格：{entry.markPrice}</Text>
                 <Text style={styles.textInputTitle}>强平价格：{entry.liquidationPrice}</Text>
                 <Text style={styles.textInputTitle}>保证金：{entry.maintMargin / Math.pow(10, 8)} XBT({entry.crossMargin ? '全仓' : `${entry.leverage}x`})</Text>
-                <Text style={styles.textInputTitle}>未实现盈亏(回报率%)：{`${entry.unrealisedGrossPnl / Math.pow(10, 8)} XBT(${(entry.unrealisedRoePcnt * 100).toFixed(2)})%`}</Text>
-                <Text style={styles.textInputTitle}>已实现盈亏：{`${entry.realisedGrossPnl / Math.pow(10, 8)} XBT`}</Text>
+                <Text style={styles.textInputTitle}>未实现盈亏(回报率%)：{entry}{`${entry.unrealisedGrossPnl / Math.pow(10, 8)} XBT(${(entry.unrealisedRoePcnt * 100).toFixed(2)})%`}</Text>
+                <Text style={styles.textInputTitle}>已实现盈亏：{entry.realisedGrossPnl}?{`${entry.realisedGrossPnl / Math.pow(10, 8)} XBT`}:0 XBT</Text>
                 {
                     view1
                 }
@@ -110,7 +113,7 @@ class Details extends React.Component<Props, any> {
         }
         else if (name == '活动委托') {
             var view = null;
-            if (entry.ordStatus == 'Filled' || entry.ordStatus == 'Canceled' || entry.orderState == 'Close') {
+            if (entry.ordStatus == 'Filled' || entry.ordStatus == 'Canceled' || entry.orderState == 'Rejected') {
                 view = (
                     <TouchableOpacity style={styles.touchable1} onPress={() => {
                         this.handleClear(entry.orderID);
@@ -196,6 +199,15 @@ class Details extends React.Component<Props, any> {
             this.positionState.positions.forEach((value, key) => {
                 data.push(value);
             });
+            var ping = {};
+            this.orderState.ordres.forEach((value, key) => {
+                if (value.execInst == 'Close' && value.ordStatus != 'Canceled' && value.ordStatus != 'Filled') {
+                    ping[value.symbol] = {
+                        price: value.price,
+                        orderId: value.orderID
+                    };
+                }
+            });
             if (data) {
                 view = <TextInput
                     ref='input3'
@@ -213,14 +225,14 @@ class Details extends React.Component<Props, any> {
             this.orderState.ordres.forEach((value, key) => {
                 data.push(value);
             });
-            this.orderState.ordres.forEach((value, key) => {
-                if (value.execInst == 'Close' && value.ordStatus != 'Canceled') {
-                    ping[value.symbol] = {
-                        price: value.price,
-                        orderId: value.orderID
-                    };
-                }
-            });
+            // this.orderState.ordres.forEach((value, key) => {
+            //     if (value.execInst == 'Close' && value.ordStatus != 'Canceled') {
+            //         ping[value.symbol] = {
+            //             price: value.price,
+            //             orderId: value.orderID
+            //         };
+            //     }
+            // });
         }
         return <View style={styles.bgView}>
             {view}

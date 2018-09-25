@@ -14,8 +14,8 @@ class Account extends React.Component<any, any> {
         var passwordInputText:any = this.refs.password;
         var email = emailInputText._lastNativeText;
         var password = passwordInputText._lastNativeText;
-        email = 'dengyc2013@gmail.com';
-        password = '123456';
+        // email = 'Fanlin9527+3@gmail.com';
+        // password = '123456';
         if (email && password) {
             try {
                 var success = await this.session.login(email, password);
@@ -41,6 +41,7 @@ class Account extends React.Component<any, any> {
             try {
                 var response = await this.hicoinService.regist(email, password);
                 if (response.data) {
+                    this.OnLogin();
                     alert("已经提交注册,注册成功后我们将用邮件通知你");
                 } else {
                     alert("已经注册过了,如果没有收到邮件,请联系管理员");

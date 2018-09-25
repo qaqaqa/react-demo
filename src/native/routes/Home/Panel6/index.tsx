@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import BitmexService from '../../../../services/bitmex';
 import { MarginState } from '../../../../stores/bitmex/subscribes';
 import { di } from 'jsmodules';
+import { SessionState } from '../../../../stores/session';
 var Dimensions = require('Dimensions');
 const width = Dimensions.get("window").width;
 
@@ -11,16 +12,23 @@ const width = Dimensions.get("window").width;
 class Panel6 extends React.Component<any, any> {
     @di.Inject() bitmexService: BitmexService;
     @di.Inject() marginState: MarginState;
+    @di.Inject() session: SessionState;
 
     state = {
         depositAddress: ""
     }
 
     async componentDidMount() {
-        var response = await this.bitmexService.depositAddress();
-        if (response.data) {
-            this.setState({
-                depositAddress: response.data
+        if (this.session.isActive) {
+            var response = await this.bitmexService.depositAddress();
+            if (response.data) {
+                this.setState({
+                    depositAddress: response.data
+                })
+            }
+        } else {
+            this.session.on('Active').then(() => {
+                this.componentDidMount();
             })
         }
     }

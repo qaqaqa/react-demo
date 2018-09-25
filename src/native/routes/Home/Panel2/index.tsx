@@ -11,7 +11,8 @@ const width = Dimensions.get("window").width;
 class Panel2 extends React.Component<any, any> {
 
     @di.Inject() positionState: PositionState;
-	@di.Inject() bitmexService: BitmexService;
+    @di.Inject() bitmexService: BitmexService;
+    frist = 'yes';
     state = {
         value: 1,
     }
@@ -34,6 +35,13 @@ class Panel2 extends React.Component<any, any> {
 			return null;
 		}
         var leverage = xbtusd.crossMargin ? 0 : xbtusd.leverage;
+        if (this.frist == 'yes') {
+            this.state.value = leverage;
+        }
+        if (leverage) {
+            this.frist = 'no';
+        }
+        
         return <View style={styles.bgView}>
             <Text style={styles.title}>持有仓位：XBTUSD</Text>
 
@@ -46,7 +54,7 @@ class Panel2 extends React.Component<any, any> {
             <Slider style={styles.slider}
             maximumValue={100}
             minimumValue={1}
-            value={leverage}
+            value={this.state.value}
             onSlidingComplete={this.onSlidingComplete}
             onValueChange={this.onValueChange}
             />
