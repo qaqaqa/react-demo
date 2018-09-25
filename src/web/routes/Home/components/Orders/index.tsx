@@ -4,6 +4,7 @@ import { OrderState } from '../../../../../stores/bitmex/subscribes';
 import { Table, Button } from 'antd';
 import { observer } from 'mobx-react';
 import BitmexService from '../../../../../services/bitmex';
+import toFixed2 from '../../../../../utils/toFixed2';
 const { Column } = Table;
 export interface OrderTableProps { }
 @observer
@@ -31,7 +32,9 @@ export default class OrderTable extends React.Component<OrderTableProps, any> {
                 <Column title="价格" dataIndex="price" key="price" />
                 <Column title="完全成交" dataIndex="cumQty" key="cumQty" />
                 <Column title="剩余" dataIndex="leavesQty" key="leavesQty" />
-                <Column title="委托价值" dataIndex="grossValue" key="grossValue" />
+                <Column title="委托价值" dataIndex="grossValue" key="grossValue" render={(value, record: any) => {
+                    return `${toFixed2(record.orderQty / record.price, 4)} XBT`
+                }} />
                 <Column title="成交价格" dataIndex="avgPx" key="avgPx" />
                 <Column title="类型" dataIndex="ordType" key="ordType" />
                 <Column title="状态" dataIndex="ordStatus" key="ordStatus" />
