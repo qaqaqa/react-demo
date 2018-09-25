@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Collapse, Row, Input, Form, Col, Divider, Button } from 'antd';
 import { di } from 'jsmodules';
 import BitmexService from '../../../../../services/bitmex';
+import toFixed2 from '../../../../../utils/toFixed2';
 
 export default class extends React.Component<any> {
     @di.Inject() bitmexService: BitmexService;
@@ -54,7 +55,7 @@ export default class extends React.Component<any> {
         var { count, price } = this.state;
         var value = '';
         if (count > 0 && price > 0) {
-            value = (count / price).toFixed(4);
+            value = toFixed2(count / price, 4);
         }
         return (
             <React.Fragment>
