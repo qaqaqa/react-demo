@@ -21,15 +21,11 @@ export default class extends React.Component<any> {
 
     render() {
         const xbtusd = this.positionState.positions.get('XBTUSD');
-        if (!xbtusd) {
-            return null;
-        }
         var currentQty = 0,
             avgCostPrice = 0,
             unrealisedRoePcnt = 0,
             liquidationPrice = 0,
             leverage = 0;
-
         if (xbtusd) {
             currentQty = xbtusd.currentQty;
             avgCostPrice = xbtusd.avgCostPrice;
