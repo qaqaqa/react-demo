@@ -19,7 +19,7 @@ class Login extends React.Component<RouteComponentProps<any>, any> {
             if (success) {
                 this.setState({ redirectToReferrer: true });
             } else {
-                alert("登录失败");
+                alert("用户名或密码错误");
             }
         } catch (ex) {
             alert('用户名或密码错误');
