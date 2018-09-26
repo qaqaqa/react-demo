@@ -23,7 +23,7 @@ export class OrderState {
     get activeOrderCount() {
         var cnt = 0;
         this.ordres.forEach((item) => {
-            if (['Canceled', 'Filled', 'Rejected'].indexOf(item.ordStatus) == -1) {
+            if (['Canceled', 'Filled', 'Rejected'].indexOf(item.ordStatus) == -1 && item.currentQty != 0) {
                 cnt++;
             }
         });

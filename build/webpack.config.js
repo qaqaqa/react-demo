@@ -30,20 +30,20 @@ for (var name in entry) {
 
 const config = {
     entry: entrys,
-    devtool: project.sourcemaps
-        ? "source-map"
-        : false,
-    mode: __DEV__
-        ? "development"
-        : "production",
+    devtool: project.sourcemaps ?
+        "source-map" :
+        false,
+    mode: __DEV__ ?
+        "development" :
+        "production",
     output: {
         path: inProject(project.outDir),
-        filename: __DEV__
-            ? "assets/scripts/[name].js"
-            : "assets/scripts/[name].[chunkhash].js",
-        chunkFilename: __DEV__
-            ? "assets/scripts/[name].js"
-            : "assets/scripts/[name].[chunkhash].js",
+        filename: __DEV__ ?
+            "assets/scripts/[name].js" :
+            "assets/scripts/[name].[chunkhash].js",
+        chunkFilename: __DEV__ ?
+            "assets/scripts/[name].js" :
+            "assets/scripts/[name].[chunkhash].js",
         publicPath: project.publicPath
     },
     resolve: {
@@ -69,8 +69,8 @@ const config = {
     },
     plugins: [
         new webpack
-            .optimize
-            .ModuleConcatenationPlugin(),
+        .optimize
+        .ModuleConcatenationPlugin(),
         new webpack.DefinePlugin(Object.assign({
             "process.env": {
                 NODE_ENV: JSON.stringify(project.env)
@@ -90,11 +90,9 @@ config
     .push({
         test: /\.(ts|tsx)$/,
         //exclude: /node_modules/,
-        use: [
-            {
-                loader: "ts-loader"
-            }
-        ]
+        use: [{
+            loader: "ts-loader"
+        }]
     });
 
 // Styles ------------------------------------
@@ -111,34 +109,32 @@ config
         test: /\.css$/,
         loader: extractStyles.extract({
             fallback: "style-loader",
-            use: [
-                {
-                    loader: "css-loader",
-                    options: {
-                        sourceMap: project.sourcemaps,
-                        minimize: {
-                            autoprefixer: {
-                                add: true,
-                                remove: true,
-                                browsers: browsers
-                            },
-                            discardComments: {
-                                removeAll: true
-                            },
-                            discardUnused: false,
-                            mergeIdents: false,
-                            reduceIdents: false,
-                            safe: true,
-                            sourcemap: project.sourcemaps
-                        }
-                    }
-                }, {
-                    loader: "postcss-loader",
-                    options: {
-                        sourceMap: true
+            use: [{
+                loader: "css-loader",
+                options: {
+                    sourceMap: project.sourcemaps,
+                    minimize: {
+                        autoprefixer: {
+                            add: true,
+                            remove: true,
+                            browsers: browsers
+                        },
+                        discardComments: {
+                            removeAll: true
+                        },
+                        discardUnused: false,
+                        mergeIdents: false,
+                        reduceIdents: false,
+                        safe: true,
+                        sourcemap: project.sourcemaps
                     }
                 }
-            ]
+            }, {
+                loader: "postcss-loader",
+                options: {
+                    sourceMap: true
+                }
+            }]
         })
     });
 
@@ -150,44 +146,42 @@ config
         include: [inProject('src')],
         loader: extractStyles.extract({
             fallback: "style-loader",
-            use: [
-                {
-                    loader: "css-loader",
-                    options: {
-                        sourceMap: project.sourcemaps,
-                        modules: false,
-                        localIdentName: __DEV__
-                            ? '[path][name]-[local]-[hash:base64:5]'
-                            : null,
-                        minimize: {
-                            autoprefixer: {
-                                add: true,
-                                remove: true,
-                                browsers: browsers
-                            },
-                            discardComments: {
-                                removeAll: true
-                            },
-                            discardUnused: false,
-                            mergeIdents: false,
-                            reduceIdents: false,
-                            safe: true,
-                            sourcemap: project.sourcemaps
-                        }
-                    }
-                }, {
-                    loader: "postcss-loader",
-                    options: {
-                        sourceMap: true
-                    }
-                }, {
-                    loader: "less-loader",
-                    options: {
-                        sourceMap: project.sourcemaps,
-                        includePaths: [inProjectSrc("styles")]
+            use: [{
+                loader: "css-loader",
+                options: {
+                    sourceMap: project.sourcemaps,
+                    modules: false,
+                    localIdentName: __DEV__ ?
+                        '[path][name]-[local]-[hash:base64:5]' :
+                        null,
+                    minimize: {
+                        autoprefixer: {
+                            add: true,
+                            remove: true,
+                            browsers: browsers
+                        },
+                        discardComments: {
+                            removeAll: true
+                        },
+                        discardUnused: false,
+                        mergeIdents: false,
+                        reduceIdents: false,
+                        safe: true,
+                        sourcemap: project.sourcemaps
                     }
                 }
-            ]
+            }, {
+                loader: "postcss-loader",
+                options: {
+                    sourceMap: true
+                }
+            }, {
+                loader: "less-loader",
+                options: {
+                    sourceMap: project.sourcemaps,
+                    includePaths: [inProjectSrc("styles")]
+                }
+            }]
         })
     });
 
@@ -307,24 +301,10 @@ if (!__TEST__) {
 }
 // Production Optimizations ------------------------------------
 if (__PROD__) {
-    config
-        .plugins
-        .push(new webpack.LoaderOptionsPlugin({minimize: true, debug: false}), new webpack.optimize.UglifyJsPlugin({
-            sourceMap: !!config.devtool,
-            comments: false,
-            compress: {
-                warnings: false,
-                screw_ie8: true,
-                conditionals: true,
-                unused: true,
-                comparisons: true,
-                sequences: true,
-                dead_code: true,
-                evaluate: true,
-                if_return: true,
-                join_vars: true
-            }
-        }));
+    config.plugins.push(new webpack.LoaderOptionsPlugin({
+        minimize: true,
+        debug: false
+    }));
 }
 
 module.exports = config;
