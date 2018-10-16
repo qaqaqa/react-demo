@@ -1,21 +1,23 @@
 import * as React from 'react';
-import { View, StyleSheet, Image, Text } from 'react-native';
+import { FlatList, StyleSheet, Image, Text, View } from 'react-native';
 var Dimensions = require('Dimensions');
 const window = Dimensions.get("window");
 const cheerio = require('cheerio-without-node-native');
 import PageScrollView from './PageScrollView'
 import ui from '../../../stores/ui'
 import { observer } from 'mobx-react';
+import Video from 'react-native-video'
 
 @observer
 class TableView extends React.Component<any, any> {
-
+    _flatList;
     urls = [];
     imageUrls = [];
     pageArr = [1];
     state = {
         videoArr: [],
-        imageArr: []
+        imageArr: [],
+        currentPage: 0
     }
 
     videoDatas = [];
@@ -62,43 +64,62 @@ class TableView extends React.Component<any, any> {
     componentWillMount() {
         this.getVideoData(1);
     }
-
-    componentDidUpdate() {
-        if (this.state.videoArr.length - ui.currentPage == 6) {
+    _onscroll(event) {
+        let nativeEvent = event.nativeEvent;
+        let offsetY = nativeEvent.contentOffset.y;
+        this.setState({
+            currentPage: Math.round(offsetY / window.height)
+        })
+        console.log('当前页数： ', this.state.currentPage)
+        if (this.state.videoArr.length - this.state.currentPage == 6) {
             var pageIndex = Math.ceil(this.state.videoArr.length / 20);
             if (this.pageArr.indexOf(pageIndex) == -1) {
                 this.getVideoData(pageIndex);
                 this.pageArr.push(pageIndex);
             }
         }
+        this._flatList && this._flatList.scrollToIndex({ viewPosition: 0, index: Math.round(offsetY / window.height) });
+    }
 
-        if (this.state.videoArr.length >= 3) {
-            if (ui.currentPage != 0) {
-                this.videoDatas = this.state.videoArr.slice(ui.currentPage-1, ui.currentPage + 2)
-                this.imageDatas = this.state.imageArr.slice(ui.currentPage-1, ui.currentPage + 2)
-            }
+    _renderItem = (entry, index) => {
+        console.log('index------ ', this.state.currentPage, entry.index)
+        var videoView = null;
+        if (this.state.currentPage == entry.index || entry.index == this.state.currentPage+1 || entry.index == this.state.currentPage-1) {
+            videoView = <Video
+                source={{ uri: entry.item }}
+                resizeMode='cover'
+                volume={0}
+                repeat={true}
+                paused={this.state.currentPage == entry.index ? false : true}
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    bottom: 0,
+                    right: 0,
+                }} />
         }
-
-        console.log('update:',this.videoDatas);
+        return <View style={{ width: window.width, height: window.height }}>
+            {videoView}
+        </View>
     }
 
     render() {
 
+        let currentPage = this.state.currentPage;
+        console.log('当前页数render： ', currentPage)
         if (this.state.videoArr.length >= 3) {
-            if (ui.currentPage == 0) {
-                this.videoDatas = this.state.videoArr.slice(ui.currentPage, ui.currentPage + 3)
-                this.imageDatas = this.state.imageArr.slice(ui.currentPage, ui.currentPage + 3)
-            }
-            console.log('render:',this.videoDatas);
             return (
-                <PageScrollView
-                    style={{ width: window.width, height: window.height }}
-                    imageArr={this.imageDatas}
-                    videoArr={this.videoDatas}
-                    HorV="v"
-                    ifAutoScroll={false}
-                    ifShowPointerView={false}
-                />
+                <View>
+                    <FlatList
+                        ref={(flatList) => this._flatList = flatList}
+                        style={{ width: window.width, height: window.height }}
+                        onScrollEndDrag={this._onscroll.bind(this)}
+                        renderItem={this._renderItem}
+                        data={[...this.state.videoArr]}>
+                    </FlatList>
+                </View>
+
             )
         } else {
             return <Text style={{ alignSelf: 'center', margin: 200, width: window.width, textAlign: 'center' }}>没得数据！！！</Text>;
