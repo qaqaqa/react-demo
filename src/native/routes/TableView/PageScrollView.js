@@ -10,6 +10,7 @@ import {
     ImageBackground,
 } from 'react-native';
 import Video from 'react-native-video'
+import ui from '../../../stores/ui'
 const { width: w, height: h } = Dimensions.get('window');
 
 class PageScrollView extends Component {
@@ -45,6 +46,10 @@ class PageScrollView extends Component {
             //记录是否是首次
             ifFirst: true,
 
+            count: 0, //统计当前循环了几次
+
+            showThumbnail:true //海报和视频之间切换
+
         };
     };
 
@@ -59,6 +64,8 @@ class PageScrollView extends Component {
 
         //轮播图片的数组(该数组存在时使用该数组,datas数组失效)
         imageArr: [],
+
+        videoArr:[],
         //如果是传入图片数组时,自定义的图片样式(该属性在自定义View时无用)
         imageStyle: null,
 
@@ -284,26 +291,40 @@ class PageScrollView extends Component {
         let currentPage = Math.round(this.state.currentPage);
         let ifInfinite = this.props.ifInfinite;
         ifInfinite && (currentPage %= this.state.pageNum);
+
         return currentPage;
     }
     //获得整数型滚动页面后的操作
     dealWithIntCP() {
         let currentPage = this.getintCP();
+
         if (currentPage !== this.state.intCP) {
+            if (currentPage == 0 && this.state.intCP == this.state.pageNum-1) {
+                this.state.count++;
+            }
+            if(currentPage == this.state.pageNum-1 && this.state.intCP == 0 && this.state.count >= 0)
+            {
+                this.state.count--;
+            }
+            
+
             this.props.currentPageChangeFunc && this.props.currentPageChangeFunc(currentPage);
             this.state.intCP = currentPage;
             this.state.paused = false;
+            ui.currentPage = this.state.count*3+this.state.intCP;
+            console.log('当前页：',this.state.count*3+this.state.intCP);
         }
     }
 
     // 渲染scrollView
     renderScrollView = () => {
-        let { imageArr, datas, ifInfinite, dealWithClickImage: dealClick, sizeSmall, opacitySmall, rotateDeg, skewDeg, imageStyle, resizeMode, HorV, builtinStyle } = this.props;
+        let { imageArr, datas, ifInfinite, dealWithClickImage: dealClick, sizeSmall, opacitySmall, rotateDeg, skewDeg, imageStyle, resizeMode, HorV, builtinStyle,videoArr } = this.props;
         let { viewWidth, width, viewHeight, height, pageNum, currentPage } = this.state;
         let { builtinStyles, builtinStyleArgs } = this;
         this.dealWithIntCP();
         //datas数据
-        datas = imageArr.length ? imageArr : datas;
+        datas = videoArr.length ? videoArr : datas;
+        let imageDatas = imageArr.length ? imageArr : imageDatas;
         ifInfinite && (datas = [...datas, ...datas, ...datas]);
         //当滚动到当前页的大小为正常大小的多大
         let sL = 1;
@@ -350,15 +371,19 @@ class PageScrollView extends Component {
                     skew = distance * skewS;
                 }
             }
-            let style = imageStyle || { width: viewWidth, height: viewHeight };
+            
+            let style = imageStyle || { width: viewWidth, height: viewHeight,backgroundColor:'#00000000' };
             arr.push(
                 <TouchableOpacity activeOpacity={dealClick ? 0.5 : 1} onPress={() => { dealClick && dealClick(i % this.pNum) }} key={i} style={style} onLayout={this.imageLayout}>
                     <Video
                         source={{ uri: datas[i] }}
-                        // resizeMode='contain'
-                        resizeMode='cover'
+                        resizeMode='contain'
+                        // resizeMode='cover'
+                        volume={0}
                         repeat={true}
-                        paused={currentPage == i?false:true}
+                        paused={currentPage == i ? false : true}
+                        poster={imageDatas[i]}
+                        posterResizeMode='contain'
                         style={{
                             position: 'absolute',
                             top: 0,
@@ -411,6 +436,7 @@ class PageScrollView extends Component {
         this.scrollToPage(currentPage);
         //如果设置了自动轮播,则重新开启定时器
         this.props.ifAutoScroll && this.setInfiniteInterval();
+
     };
 
     // 当滚动scrollView的时候(升级后)

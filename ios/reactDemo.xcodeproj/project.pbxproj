@@ -36,12 +36,12 @@
 		2DCD954D1E0B4F2C00145EB5 /* reactDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* reactDemoTests.m */; };
 		2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
-		68009BAEF89C4553AF984F35 /* libRCTVideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FF6A7328C3347EE96A8798E /* libRCTVideo.a */; };
 		7E082CAE76934299A2BEF611 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 34BA0A2BA78F43828D6491C9 /* libz.tbd */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		853BEE8BEF144FFC876CB47A /* libRealmReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A533A76905C4AC69C9A7B99 /* libRealmReact.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		B1426FB8B9104CF39DFB8730 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = F4E7ED52E02148F68BCC66FD /* libc++.tbd */; };
+		CCD1ACBE2175949100145D5B /* libRCTVideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CCA277E3216F3F7B00B0120E /* libRCTVideo.a */; };
 		CCD4F17321412C7200B0982E /* BGLineChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = CCD4F16F21412C7200B0982E /* BGLineChartView.m */; };
 		CCD4F17421412C7200B0982E /* LineChartManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CCD4F17021412C7200B0982E /* LineChartManager.m */; };
 		CCD4F17521412C7200B0982E /* LineChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = CCD4F17121412C7200B0982E /* LineChartView.m */; };
@@ -401,6 +401,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CCD1ACBE2175949100145D5B /* libRCTVideo.a in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
@@ -417,7 +418,6 @@
 				853BEE8BEF144FFC876CB47A /* libRealmReact.a in Frameworks */,
 				B1426FB8B9104CF39DFB8730 /* libc++.tbd in Frameworks */,
 				7E082CAE76934299A2BEF611 /* libz.tbd in Frameworks */,
-				68009BAEF89C4553AF984F35 /* libRCTVideo.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
