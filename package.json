@@ -18,7 +18,7 @@
 		"express-http-proxy": "^1.2.0",
 		"lodash": "^4.17.10",
 		"react-native-page-scrollview": "^1.0.2",
-		"react-native-video": "^3.2.1"
+		"react-native-video": "^4.0.0"
 	},
 	"devDependencies": {
 		"@types/chai": "^4.1.4",
@@ -59,7 +59,7 @@
 		"react": "16.4.2",
 		"react-dialog-context-native": "^1.0.4",
 		"react-dom": "^16.4.2",
-		"react-native": "0.56.0",
+		"react-native": "0.57.0",
 		"react-native-typescript-transformer": "^1.2.10",
 		"react-router": "^4.3.1",
 		"react-router-config": "^1.0.0-beta.4",

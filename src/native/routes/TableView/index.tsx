@@ -64,32 +64,8 @@ class TableView extends React.Component<any, any> {
     }
 
     componentDidUpdate() {
-        //     let videoArr = this.state.videoArr;
-        //     if (videoArr.length - ui.currentPage == 6) {
-        //         var pageIndex = Math.ceil(videoArr.length / 20);
-        //         if (this.pageArr.indexOf(pageIndex) == -1) {
-        //             this.getVideoData(pageIndex);
-        //             this.pageArr.push(pageIndex);
-        //         }
-        //     }
-        //     this.data = [];
-        //     if (videoArr.length >= 3) {
-        //         for (let index = 0; index < 3; index++) {
-        //             if (ui.currentPage == 0) {
-        //                 // this.data.splice(index, 1,videoArr[ui.currentPage+index]);
-        //                 this.data.push(videoArr[ui.currentPage + index]);
-        //             }
-        //             else {
-        //                 // this.data.splice(index, 1, videoArr[ui.currentPage + index - 1]);
-        //                 this.data.push(videoArr[ui.currentPage + index - 1]);
-        //             }
-        //         }
-        //     }
-
-
-
-        if (this.videoDatas.length - ui.currentPage == 6) {
-            var pageIndex = Math.ceil(this.videoDatas.length / 20);
+        if (this.state.videoArr.length - ui.currentPage == 6) {
+            var pageIndex = Math.ceil(this.state.videoArr.length / 20);
             if (this.pageArr.indexOf(pageIndex) == -1) {
                 this.getVideoData(pageIndex);
                 this.pageArr.push(pageIndex);
@@ -97,9 +73,9 @@ class TableView extends React.Component<any, any> {
         }
 
         if (this.state.videoArr.length >= 3) {
-            if (ui.currentPage >= 3) {
-                this.videoDatas = this.state.videoArr.slice(ui.currentPage-3, ui.currentPage + 2)
-                this.imageDatas = this.state.imageArr.slice(ui.currentPage-3, ui.currentPage + 2)
+            if (ui.currentPage != 0) {
+                this.videoDatas = this.state.videoArr.slice(ui.currentPage-1, ui.currentPage + 2)
+                this.imageDatas = this.state.imageArr.slice(ui.currentPage-1, ui.currentPage + 2)
             }
         }
 
@@ -109,15 +85,15 @@ class TableView extends React.Component<any, any> {
     render() {
 
         if (this.state.videoArr.length >= 3) {
-            if (ui.currentPage < 3) {
-                this.videoDatas = this.state.videoArr.slice(ui.currentPage, ui.currentPage + 5)
-                this.imageDatas = this.state.imageArr.slice(ui.currentPage, ui.currentPage + 5)
+            if (ui.currentPage == 0) {
+                this.videoDatas = this.state.videoArr.slice(ui.currentPage, ui.currentPage + 3)
+                this.imageDatas = this.state.imageArr.slice(ui.currentPage, ui.currentPage + 3)
             }
             console.log('render:',this.videoDatas);
             return (
                 <PageScrollView
                     style={{ width: window.width, height: window.height }}
-                    imageArr={this.videoDatas}
+                    imageArr={this.imageDatas}
                     videoArr={this.videoDatas}
                     HorV="v"
                     ifAutoScroll={false}

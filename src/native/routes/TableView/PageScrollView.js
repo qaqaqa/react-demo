@@ -48,7 +48,7 @@ class PageScrollView extends Component {
 
             count: 0, //统计当前循环了几次
 
-            showThumbnail:true //海报和视频之间切换
+            showPoster: true //海报和视频之间切换
 
         };
     };
@@ -65,7 +65,7 @@ class PageScrollView extends Component {
         //轮播图片的数组(该数组存在时使用该数组,datas数组失效)
         imageArr: [],
 
-        videoArr:[],
+        videoArr: [],
         //如果是传入图片数组时,自定义的图片样式(该属性在自定义View时无用)
         imageStyle: null,
 
@@ -299,26 +299,25 @@ class PageScrollView extends Component {
         let currentPage = this.getintCP();
 
         if (currentPage !== this.state.intCP) {
-            if (currentPage == 0 && this.state.intCP == this.state.pageNum-1) {
+            if (currentPage == 0 && this.state.intCP == this.state.pageNum - 1) {
                 this.state.count++;
             }
-            if(currentPage == this.state.pageNum-1 && this.state.intCP == 0 && this.state.count >= 0)
-            {
+            if (currentPage == this.state.pageNum - 1 && this.state.intCP == 0 && this.state.count >= 0) {
                 this.state.count--;
             }
-            
+
 
             this.props.currentPageChangeFunc && this.props.currentPageChangeFunc(currentPage);
             this.state.intCP = currentPage;
             this.state.paused = false;
-            ui.currentPage = this.state.count*3+this.state.intCP;
-            console.log('当前页：',this.state.count*3+this.state.intCP);
+            ui.currentPage = this.state.count * 3 + this.state.intCP;
+            console.log('当前页：', ui.currentPage);
         }
     }
 
     // 渲染scrollView
     renderScrollView = () => {
-        let { imageArr, datas, ifInfinite, dealWithClickImage: dealClick, sizeSmall, opacitySmall, rotateDeg, skewDeg, imageStyle, resizeMode, HorV, builtinStyle,videoArr } = this.props;
+        let { imageArr, datas, ifInfinite, dealWithClickImage: dealClick, sizeSmall, opacitySmall, rotateDeg, skewDeg, imageStyle, resizeMode, HorV, builtinStyle, videoArr } = this.props;
         let { viewWidth, width, viewHeight, height, pageNum, currentPage } = this.state;
         let { builtinStyles, builtinStyleArgs } = this;
         this.dealWithIntCP();
@@ -326,6 +325,7 @@ class PageScrollView extends Component {
         datas = videoArr.length ? videoArr : datas;
         let imageDatas = imageArr.length ? imageArr : imageDatas;
         ifInfinite && (datas = [...datas, ...datas, ...datas]);
+        ifInfinite && (imageDatas = [...imageDatas, ...imageDatas, ...imageDatas]);
         //当滚动到当前页的大小为正常大小的多大
         let sL = 1;
         //当滚动到旁边时的大小为正常大小的多大
@@ -371,28 +371,71 @@ class PageScrollView extends Component {
                     skew = distance * skewS;
                 }
             }
-            
-            let style = imageStyle || { width: viewWidth, height: viewHeight,backgroundColor:'#00000000' };
-            arr.push(
-                <TouchableOpacity activeOpacity={dealClick ? 0.5 : 1} onPress={() => { dealClick && dealClick(i % this.pNum) }} key={i} style={style} onLayout={this.imageLayout}>
-                    <Video
-                        source={{ uri: datas[i] }}
-                        resizeMode='contain'
-                        // resizeMode='cover'
-                        volume={0}
-                        repeat={true}
-                        paused={currentPage == i ? false : true}
-                        poster={imageDatas[i]}
-                        posterResizeMode='contain'
-                        style={{
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            bottom: 0,
-                            right: 0,
-                        }} />
-                </TouchableOpacity>
-            );
+
+
+
+            if (datas.length) {
+                let style = imageStyle || { width: viewWidth, height: viewHeight };
+                if (builtinStyle) {
+                    arr.push(
+                        <TouchableOpacity activeOpacity={dealClick ? 0.5 : 1} onPress={() => { dealClick && dealClick(i % this.pNum) }} key={i} style={[]}>
+                            {builtinStyles[builtinStyle](i % pageNum, datas[i % pageNum], { size, opacity, rotate, skew })}
+                        </TouchableOpacity>
+                    );
+                } else {
+                    arr.push(
+                        <TouchableOpacity activeOpacity={dealClick ? 0.5 : 1} onPress={() => { dealClick && dealClick(i % this.pNum) }} key={i} style={style} onLayout={this.imageLayout}>
+                            <Video
+                                source={{ uri: datas[i] }}
+                                resizeMode='contain'
+                                // resizeMode='cover'
+                                volume={0}
+                                repeat={true}
+                                paused={currentPage == i ? false : true}
+                                // poster={imageDatas[i]}
+                                posterResizeMode='contain'
+                                // onEnd={()=>this.setState({showPoster:false})}
+                                style={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    bottom: 0,
+                                    right: 0,
+                                }} />
+
+                        </TouchableOpacity>
+                    );
+                }
+            } else {
+                arr.push(
+                    <View key={i} style={[]} onLayout={(event) => { (sS || oS || rS || skewS) ? this.setDistance1(event) : this.contentLayout(event) }}>
+                        {(sS || oS || rS || skewS) ? this.props.view(i % pageNum, datas[i % pageNum], { size, opacity, rotate, skew }) : this.props.view(i % pageNum, datas[i % pageNum])}
+                    </View>
+                );
+            }
+            //<Image source={{ uri: imageDatas[i] }} style={[style, { resizeMode: 'contain' }]} />
+            // let style = imageStyle || { width: viewWidth, height: viewHeight };
+            // arr.push(
+            //     <TouchableOpacity activeOpacity={dealClick ? 0.5 : 1} onPress={() => { dealClick && dealClick(i % this.pNum) }} key={i} style={style} onLayout={this.imageLayout}>
+            //         <Video
+            //             source={{ uri: datas[i] }}
+            //             resizeMode='contain'
+            //             // resizeMode='cover'
+            //             volume={0}
+            //             repeat={true}
+            //             paused={currentPage == i ? false : true}
+            //             poster={imageDatas[i]}
+            //             posterResizeMode='contain'
+            //             // onEnd={()=>this.setState({showPoster:false})}
+            //             style={{
+            //                 position: 'absolute',
+            //                 top: 0,
+            //                 left: 0,
+            //                 bottom: 0,
+            //                 right: 0,
+            //             }} />
+            //     </TouchableOpacity>
+            // );
         }
         if (HorV === 'h') {
             //当滚动到最后一张时的右边的空白部分
