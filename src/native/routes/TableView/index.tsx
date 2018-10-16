@@ -82,13 +82,12 @@ class TableView extends React.Component<any, any> {
     }
 
     _renderItem = (entry, index) => {
-        console.log('index------ ', this.state.currentPage, entry.index)
         var videoView = null;
         if (this.state.currentPage == entry.index || entry.index == this.state.currentPage+1 || entry.index == this.state.currentPage-1) {
             videoView = <Video
                 source={{ uri: entry.item }}
                 resizeMode='cover'
-                volume={0}
+                volume={1}
                 repeat={true}
                 paused={this.state.currentPage == entry.index ? false : true}
                 style={{
@@ -107,7 +106,6 @@ class TableView extends React.Component<any, any> {
     render() {
 
         let currentPage = this.state.currentPage;
-        console.log('当前页数render： ', currentPage)
         if (this.state.videoArr.length >= 3) {
             return (
                 <View>
