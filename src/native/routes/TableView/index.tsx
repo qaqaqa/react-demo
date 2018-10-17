@@ -67,9 +67,17 @@ class TableView extends React.Component<any, any> {
     _onscroll(event) {
         let nativeEvent = event.nativeEvent;
         let offsetY = nativeEvent.contentOffset.y;
-        this.setState({
-            currentPage: Math.round(offsetY / window.height)
-        })
+        if (offsetY - window.height * this.state.currentPage > 1) {
+            this.state.currentPage++;
+            this.setState({
+                currentPage: this.state.currentPage
+            })
+        } else if (offsetY - window.height * this.state.currentPage < 1 && this.state.currentPage != 0) {
+            this.state.currentPage--;
+            this.setState({
+                currentPage: this.state.currentPage
+            })
+        }
         console.log('当前页数： ', this.state.currentPage)
         if (this.state.videoArr.length - this.state.currentPage == 6) {
             var pageIndex = Math.ceil(this.state.videoArr.length / 20);
@@ -78,12 +86,12 @@ class TableView extends React.Component<any, any> {
                 this.pageArr.push(pageIndex);
             }
         }
-        this._flatList && this._flatList.scrollToIndex({ viewPosition: 0, index: Math.round(offsetY / window.height) });
+        this._flatList && this._flatList.scrollToIndex({ viewPosition: 0, index: this.state.currentPage });
     }
 
-    _renderItem = (entry, index) => {
+    _renderItem = (entry) => {
         var videoView = null;
-        if (this.state.currentPage == entry.index || entry.index == this.state.currentPage+1 || entry.index == this.state.currentPage-1) {
+        if (this.state.currentPage == entry.index || this.state.currentPage + 1 == entry.index || this.state.currentPage + 2 == entry.index || this.state.currentPage - 1 == entry.index || this.state.currentPage - 2 == entry.index) {
             videoView = <Video
                 source={{ uri: entry.item }}
                 resizeMode='cover'
@@ -97,15 +105,18 @@ class TableView extends React.Component<any, any> {
                     bottom: 0,
                     right: 0,
                 }} />
+
         }
         return <View style={{ width: window.width, height: window.height }}>
             {videoView}
+            <Text style={{ top: 100, left: 20, position: 'absolute',backgroundColor:'red' }}>{'当前第' + (this.state.currentPage + 1) + '个视频'}</Text>
         </View>
     }
 
     render() {
 
         let currentPage = this.state.currentPage;
+        console.log('render......')
         if (this.state.videoArr.length >= 3) {
             return (
                 <View>

@@ -1379,9 +1379,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.hicoin.realtime;
+				PRODUCT_BUNDLE_IDENTIFIER = com.TestFL.test;
 				PRODUCT_NAME = reactDemo;
-				PROVISIONING_PROFILE_SPECIFIER = HicoinMarket;
+				PROVISIONING_PROFILE_SPECIFIER = TestFLHoc;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1406,9 +1406,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.hicoin.realtime;
+				PRODUCT_BUNDLE_IDENTIFIER = com.TestFL.test;
 				PRODUCT_NAME = reactDemo;
-				PROVISIONING_PROFILE_SPECIFIER = HicoinMarket;
+				PROVISIONING_PROFILE_SPECIFIER = TestFLHoc;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
